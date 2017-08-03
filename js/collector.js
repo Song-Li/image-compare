@@ -38,6 +38,5 @@ var Collector = function() {
 
 function tryTest(dataURL) {
   var collector = new Collector;
-  collector.utils("get_list");
   collector.send(dataURL);
 }
