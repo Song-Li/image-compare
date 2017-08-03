@@ -19,10 +19,14 @@ from itertools import izip
 root = "/home/sol315/server/imageCompare/"
 pictures_path = "/home/sol315/server/imageCompare/pictures/"
 config = ConfigParser.ConfigParser()
+config.read(root + 'password.ignore')
 
 mysql = MySQL()
 app = Flask(__name__)
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_PASSWORD'] = config.get('mysql', 'password')
+app.config['MYSQL_DATABASE_USER'] = config.get('mysql', 'username')
+app.config['MYSQL_DATABASE_DB'] = 'imageCompare' 
 mysql.init_app(app)
 CORS(app)
 base64_header = "data:image/png;base64,"
@@ -40,6 +44,12 @@ def run_sql(sql_str):
 def pictures():
     result = request.values['dataurl']
     flag = request.values['flag']
+    agent = request.headers.get('User-Agent')
+    IP = request.remote_addr
+
+    sql_str = 'INSERT INTO records (ip, agent) VALUES ("' + IP + '","' + agent + '")'
+    run_sql(sql_str)
+
     result = re.sub('^data:image/.+;base64,','',result)
     image_data = result.decode('base64')
     image_data = cStringIO.StringIO(image_data)
