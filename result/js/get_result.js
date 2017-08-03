@@ -153,6 +153,6 @@ function subtract() {
 // this function is used to clear all the data
 function clear_all_data() {
   var password = prompt("Input your password to clear data: ");
-  res = send_to_utils("clear," + password);
+  res = send_to_utils("delete_all," + password);
   alert(res);
 }

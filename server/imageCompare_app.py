@@ -40,6 +40,13 @@ def run_sql(sql_str):
     return res
 
 
+def delete_all():
+    sql_str = "delete from records"
+    run_sql(sql_str)
+    sql_str = "ALTER TABLE records AUTO_INCREMENT = 1"
+    run_sql(sql_str)
+    os.system("rm " + pictures_path + "*")
+
 @app.route('/utils', methods=['POST'])
 def utils():
     command = request.values['key']
@@ -47,6 +54,12 @@ def utils():
         sql_str = 'SELECT DISTINCT ip, time, id, agent, label from records'
         res = run_sql(sql_str)
         return "!@#$".join([r[0] + '~' + r[1].isoformat() + '~' + r[3] + '~' + str(r[2]) + '~' + str(r[4]) for r in res])
+    if command.split(',')[0] == 'delete_all':
+        if command.split(',')[1] == 'seclab':
+            delete_all()
+            return "finished"
+        else:
+            return "Wrong password"
 
 @app.route('/pictures', methods=['POST'])
 def pictures():
