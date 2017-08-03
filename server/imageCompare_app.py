@@ -40,6 +40,14 @@ def run_sql(sql_str):
     return res
 
 
+@app.route('/utils', methods=['POST'])
+def utils():
+    command = request.values['key']
+    if command == 'get_list':
+        sql_str = 'SELECT DISTINCT ip, time, id, agent, label from records'
+        res = run_sql(sql_str)
+        return "!@#$".join([r[0] + '~' + r[1].isoformat() + '~' + r[3] + '~' + str(r[2]) + '~' + str(r[4]) for r in res])
+
 @app.route('/pictures', methods=['POST'])
 def pictures():
     result = request.values['dataurl']
@@ -49,29 +57,30 @@ def pictures():
 
     sql_str = 'INSERT INTO records (ip, agent) VALUES ("' + IP + '","' + agent + '")'
     run_sql(sql_str)
+    # get the laster id as the picture id
+    sql_str = 'SELECT LAST_INSERT_ID()'
+    pic_id = run_sql(sql_str)[0][0]
 
     result = re.sub('^data:image/.+;base64,','',result)
     image_data = result.decode('base64')
     image_data = cStringIO.StringIO(image_data)
     image_PIL = Image.open(image_data)
-    image_PIL.save(pictures_path + str(flag)+ ".png")
-    similarity = 4.0
-    if flag == '2': 
-        im1 = Image.open(pictures_path + '1.png')
-        im2 = Image.open(pictures_path + '2.png')
-        diff1 = ImageChops.subtract(im1,im2,0.01,0)
-        diff2 = ImageChops.subtract(im2,im1,0.01,0)
-        diff = ImageChops.add(diff1,diff2)
-        #image_PIL = Image.open(diff)
-        diff = diff.convert('RGB')
-        diff.save(pictures_path + "compare.png")
-        pairs = izip(im1.getdata(), im2.getdata())
-        if len(im1.getbands()) == 1:
-            dif = sum(abs(p1-p2) for p1, p2 in pairs)
-        else:
-            dif = sum(abs(c1-c2) for p1, p2 in pairs for c1, c2 in zip(p1,p2))
-        n = im1.size[0] * im1.size[1] * 3
-        similarity = (dif/ 255.0 * 100)/n
-        return flask.jsonify({"value":similarity,"im1": list(im1.getdata()),"im2": list(im2.getdata()),"dif": list(diff.getdata())})
-    return flask.jsonify({"value": similarity})
+    image_PIL.save(pictures_path + str(pic_id)+ ".png")
+    return "finished"
 
+def subtract(id1, id2):
+    im1 = Image.open(pictures_path + id1 + '.png')
+    im2 = Image.open(pictures_path + id2 + '2.png')
+    diff1 = ImageChops.subtract(im1,im2,0.01,0)
+    diff2 = ImageChops.subtract(im2,im1,0.01,0)
+    diff = ImageChops.add(diff1,diff2)
+    diff = diff.convert('RGB')
+    diff.save(pictures_path + "compare.png")
+    pairs = izip(im1.getdata(), im2.getdata())
+    if len(im1.getbands()) == 1:
+        dif = sum(abs(p1-p2) for p1, p2 in pairs)
+    else:
+        dif = sum(abs(c1-c2) for p1, p2 in pairs for c1, c2 in zip(p1,p2))
+    n = im1.size[0] * im1.size[1] * 3
+    similarity = (dif/ 255.0 * 100)/n
+    return flask.jsonify({"value":similarity,"im1": list(im1.getdata()),"im2": list(im2.getdata()),"dif": list(diff.getdata())})
