@@ -51,10 +51,16 @@ def delete_all():
 @app.route('/modifyjs', methods=['POST'])
 def modifyjs():
     file_url = request.values['url']
+    ori_file_name = '.' + file_url.split('.')[-1]
+    if ori_file_name[-1] == '/':
+        ori_file_name = ".html"
     response = urllib2.urlopen(file_url)
     js = response.read()
     js = "//injected\n\r" + js 
-    return js
+    file_name = md5.new(js).hexdigest() + ori_file_name
+    f = open(pictures_path + 'htmls/' + file_name, 'w')
+    f.write(js)
+    return "http://lab.songli.io/compare/htmls/" + file_name
 
 
 @app.route('/utils', methods=['POST'])
