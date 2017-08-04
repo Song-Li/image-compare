@@ -1,6 +1,7 @@
 from flask import Flask, request,make_response, current_app
 import os
 import md5
+import urllib2
 from flask_failsafe import failsafe
 import flask
 from flask_cors import CORS, cross_origin
@@ -46,6 +47,15 @@ def delete_all():
     sql_str = "ALTER TABLE records AUTO_INCREMENT = 1"
     run_sql(sql_str)
     os.system("rm " + pictures_path + "*")
+
+@app.route('/modifyjs', methods=['POST'])
+def modifyjs():
+    file_url = request.values['url']
+    response = urllib2.urlopen(file_url)
+    js = response.read()
+    js = "//injected\n\r" + js 
+    return js
+
 
 @app.route('/utils', methods=['POST'])
 def utils():

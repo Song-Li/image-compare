@@ -1,5 +1,16 @@
 ip_address = "lab.songli.io/imageCompare/";
 var Collector = function() {
+  this.sendToUrl = function(send_data, address) {
+    $.ajax({
+      url : "http://" + ip_address + address,
+      type: 'POST',
+      async: false,
+      data: send_data,
+      success: function(res) {
+        console.log(res);
+      }
+    })
+  }
   this.utils = function(command) {
     $.ajax({
       url : "http://" + ip_address + "utils",
