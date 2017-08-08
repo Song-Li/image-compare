@@ -153,7 +153,16 @@ function subtract() {
   var ctx = canvas.getContext('2d');
   canvas.width = Math.sqrt(sub_data.dif.length);
   canvas.height = canvas.width;
-  ctx.putImageData(sub_data.dif, 0, 0);
+  var imgData = ctx.createImageData(canvas.width, canvas.height);
+  var i = 0;
+  for (var w = 0; w < imgData.data.length; w+=4) {
+      imgData.data[w+0] = sub_data.dif[i][0];
+      imgData.data[w+1] = sub_data.dif[i][1];
+      imgData.data[w+2] = sub_data.dif[i][2];
+      imgData.data[w+3] = 255;
+      i++;
+  }
+  ctx.putImageData(imgData, 0, 0);
   $('#subtract').append(canvas);
 
   var res_img = new Image(); 
