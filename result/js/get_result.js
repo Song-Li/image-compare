@@ -125,23 +125,51 @@ function sub_pic_data(pic1_data, pic2_data) {
 function subtract() {
   // clear the res div
   $('#subtract').empty();
+
+  var sub_data
+  $.ajax({
+    url: "http://" + ip_address + "/utils",
+    type: 'POST',
+    async: false,
+    data: {
+        key: 'subtract',
+        id1: $("select[id=select_1]").val(),
+        id2: $("select[id=select_2]").val()
+    },
+    success: function(data) {
+        console.log(data);
+      sub_data = data;
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+    }
+  });
+
   // here we only have 29 pictures
-  pic1_data = get_pixel_from_img("1");
-  pic2_data = get_pixel_from_img("2");
-  var sub_data = sub_pic_data(pic1_data, pic2_data);
+  //pic1_data = get_pixel_from_img("1");
+  //pic2_data = get_pixel_from_img("2");
+  //var sub_data = sub_pic_data(pic1_data, pic2_data);
 
   var canvas = document.createElement('canvas');
   var ctx = canvas.getContext('2d');
-  canvas.width = sub_data.width;
-  canvas.height = sub_data.height;
-  ctx.putImageData(sub_data, 0, 0);
+  canvas.width = Math.sqrt(sub_data.dif.length);
+  canvas.height = canvas.width;
+  var imgData = ctx.createImageData(canvas.width, canvas.height);
+  var i = 0;
+  for (var w = 0; w < imgData.data.length; w+=4) {
+      imgData.data[w+0] = sub_data.dif[i][0];
+      imgData.data[w+1] = sub_data.dif[i][1];
+      imgData.data[w+2] = sub_data.dif[i][2];
+      imgData.data[w+3] = 255;
+      i++;
+  }
+  ctx.putImageData(imgData, 0, 0);
   $('#subtract').append(canvas);
 
   var res_img = new Image(); 
   res_img.height = "32";
   res_img.width = "32";
   res_img.align = "top";
-  if (sub_data.same) {
+  if (sub_data.value == 0) {
     res_img.src = "./img/yes.png";
   } else {
     res_img.src = "./img/no.png";
