@@ -16,7 +16,8 @@
       varying lowp vec4 vColor;
 
       void main(void) {
-        gl_FragColor = vColor;
+        //gl_FragColor = vColor;
+        gl_FragColor = floor(vColor * 255.0) / 255.0;
       }
     </script>
 
