@@ -51,10 +51,6 @@ function start() {
     // Set up to draw the scene periodically.
 
     drawScene();
-
-    var dataURL = canvas.toDataURL('image/png', 1.0);
-    console.log(dataURL);
-    tryTest(dataURL);
   }
 }
 
@@ -220,7 +216,7 @@ function initTextures() {
   cubeTexture = gl.createTexture();
   cubeImage = new Image();
   cubeImage.onload = function() { handleTextureLoaded(cubeImage, cubeTexture); }
-  cubeImage.src = "texture.png";
+  cubeImage.src = "./texture.png";
 }
 
 function handleTextureLoaded(image, texture) {
