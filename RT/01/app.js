@@ -9,9 +9,13 @@ var vertexShaderText =
 'void main()',
 '{',
 '  fragColor = vertColor;',
-'  gl_Position = vec4(vertPosition, 0.0, 1.0);',
+'  vec2 pos = vertPosition;',
+'  pos.x = pos.x / scale;',
+'  pos = floor((dim/16.0)*(pos+1.0))*16.0/dim-1.0;',
+'  gl_Position = vec4(pos , 0.0, 1.0);',
+'  //gl_Position = vec4(vertPosition, 0.0, 1.0);',
 '}'
-].join('\n');
+].join('\n'); 
 
 var fragmentShaderText =
 [
