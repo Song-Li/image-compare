@@ -229,4 +229,7 @@ var InitDemo = function () {
 	requestAnimationFrame(loop);
 	*/
 	gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+    var dataURL = canvas.toDataURL('image/png', 1.0);
+    console.log(dataURL);
+    tryTest(dataURL);
 };

@@ -138,4 +138,7 @@ var InitDemo = function () {
 	
 	
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
+    var dataURL = canvas.toDataURL('image/png', 1.0);
+    console.log(dataURL);
+    tryTest(dataURL);
 };

@@ -226,4 +226,5 @@ var InitDemo = function () {
 		requestAnimationFrame(loop);
 	};
 	requestAnimationFrame(loop);
+
 };
