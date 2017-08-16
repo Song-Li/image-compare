@@ -123,6 +123,11 @@ var InitDemo = function () {
 	// Main render loop
 	//
 	gl.useProgram(program);
+	gl.uniform2f(gl.getUniformLocation(program, 'dim'), canvas.width, canvas.height);
+	var scale = 1.0;
+	var dir = 1;
+	var scalepos = gl.getUniformLocation(program, 'scale');
+	gl.uniform1f(scalepos, scale);
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     var dataURL = canvas.toDataURL('image/png', 1.0);
