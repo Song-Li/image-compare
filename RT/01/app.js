@@ -5,6 +5,8 @@ var vertexShaderText =
 'attribute vec2 vertPosition;',
 'attribute vec3 vertColor;',
 'varying vec3 fragColor;',
+'uniform vec2 dim;',
+'uniform float scale;',
 '',
 'void main()',
 '{',
