@@ -20,7 +20,7 @@ var fragmentShaderText =
 'varying vec3 fragColor;',
 'void main()',
 '{',
-'  gl_FragColor = vec4(fragColor, 1.0);',
+'  gl_FragColor = vec4(floor(fragColor * 255.0)/255.0 , 1.0);',
 '}'
 ].join('\n');
 
