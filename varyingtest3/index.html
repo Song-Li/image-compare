@@ -29,11 +29,13 @@
 
       uniform mat4 uMVMatrix;
       uniform mat4 uPMatrix;
+      uniform vec3 dim;
 
       varying highp vec4 vColor;
 
       void main(void) {
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);
         vColor = aVertexColor;
       }
     </script>

@@ -300,6 +300,8 @@ function initShaders() {
 
   vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
   gl.enableVertexAttribArray(vertexColorAttribute);
+
+  gl.uniform3f(gl.getUniformLocation(shaderProgram, 'dim'), canvas.width, canvas.height, 100.0);
 }
 
 //
@@ -384,6 +386,8 @@ function setMatrixUniforms() {
 
   var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
+
+
 }
 
 var mvMatrixStack = [];
