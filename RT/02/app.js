@@ -8,11 +8,13 @@ var vertexShaderText =
 'uniform mat4 mWorld;',
 'uniform mat4 mView;',
 'uniform mat4 mProj;',
+'uniform vec3 dim;',
 '',
 'void main()',
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
+'  gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
 '}'
 ].join('\n');
 
@@ -23,7 +25,7 @@ var fragmentShaderText =
 'varying vec3 fragColor;',
 'void main()',
 '{',
-'  gl_FragColor = vec4(fragColor, 1.0);',
+'  gl_FragColor = vec4(floor(fragColor * 255.0)/255.0 , 1.0);',
 '}'
 ].join('\n');
 
@@ -115,11 +117,13 @@ var InitDemo = function () {
 
 	gl.enableVertexAttribArray(positionAttribLocation);
 	gl.enableVertexAttribArray(colorAttribLocation);
+	 
 
 	//
 	// Main render loop
 	//
 	gl.useProgram(program);
+	gl.uniform3f(gl.getUniformLocation(Program, 'dim'), canvas.width, canvas.height, 100.0);
 	var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
 	var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
 	var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
