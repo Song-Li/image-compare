@@ -163,6 +163,8 @@ function subtract() {
       imgData.data[w+3] = 255;
       if(sub_data.dif[i][0] != 0||sub_data.dif[i][1] != 0|| sub_data.dif[i][2] != 0){
         console.log("diff: " + sub_data.dif[i][0] + "," + sub_data.dif[i][1] + "," + sub_data.dif[i][2]);
+        console.log("p1: " + sub_data.im1[i][0] + "," + sub_data.im1[i][1] + "," + sub_data.im1[i][2]);
+        console.log("p2: " + sub_data.im2[i][0] + "," + sub_data.im2[i][1] + "," + sub_data.im2[i][2]);
         count++;
       }
       i++;
