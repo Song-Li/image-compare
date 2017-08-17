@@ -123,7 +123,7 @@ var InitDemo = function () {
 	// Main render loop
 	//
 	gl.useProgram(program);
-	gl.uniform3f(gl.getUniformLocation(Program, 'dim'), canvas.width, canvas.height, 100.0);
+	gl.uniform3f(gl.getUniformLocation(program, 'dim'), canvas.width, canvas.height, 100.0);
 	var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
 	var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
 	var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
