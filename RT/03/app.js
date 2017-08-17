@@ -8,11 +8,13 @@ var vertexShaderText =
 'uniform mat4 mWorld;',
 'uniform mat4 mView;',
 'uniform mat4 mProj;',
+'uniform vec3 dim;',
 '',
 'void main()',
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
+'  gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
 '}'
 ].join('\n');
 
@@ -23,7 +25,7 @@ var fragmentShaderText =
 'varying vec3 fragColor;',
 'void main()',
 '{',
-'  gl_FragColor = vec4(fragColor, 1.0);',
+'  gl_FragColor = vec4(floor(fragColor * 255.0)/255.0 , 1.0);',
 '}'
 ].join('\n');
 
@@ -93,39 +95,39 @@ var InitDemo = function () {
 	[ // X, Y, Z           R, G, B
 		// Top
 		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5,
-		-1.0, 1.0, 1.0,    0.5, 0.5, 0.5,
+		-1.0, 1.0, 1.0,    0.5, 0.5, 1.0,
 		1.0, 1.0, 1.0,     0.5, 0.5, 0.5,
-		1.0, 1.0, -1.0,    0.5, 0.5, 0.5,
+		1.0, 1.0, -1.0,    0.5, 0.5, 1.0,
 
 		// Left
 		-1.0, 1.0, 1.0,    0.75, 0.25, 0.5,
-		-1.0, -1.0, 1.0,   0.75, 0.25, 0.5,
+		-1.0, -1.0, 1.0,   0.5, 0.5, 0.5,
 		-1.0, -1.0, -1.0,  0.75, 0.25, 0.5,
-		-1.0, 1.0, -1.0,   0.75, 0.25, 0.5,
+		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5,
 
 		// Right
 		1.0, 1.0, 1.0,    0.25, 0.25, 0.75,
-		1.0, -1.0, 1.0,   0.25, 0.25, 0.75,
+		1.0, -1.0, 1.0,   0.75, 0.25, 0.5,
 		1.0, -1.0, -1.0,  0.25, 0.25, 0.75,
-		1.0, 1.0, -1.0,   0.25, 0.25, 0.75,
+		1.0, 1.0, -1.0,   0.75, 0.25, 0.5,
 
 		// Front
 		1.0, 1.0, 1.0,    1.0, 0.0, 0.15,
-		1.0, -1.0, 1.0,    1.0, 0.0, 0.15,
+		1.0, -1.0, 1.0,    0.25, 0.25, 0.75,
 		-1.0, -1.0, 1.0,    1.0, 0.0, 0.15,
-		-1.0, 1.0, 1.0,    1.0, 0.0, 0.15,
+		-1.0, 1.0, 1.0,    0.25, 0.25, 0.75,
 
 		// Back
 		1.0, 1.0, -1.0,    0.0, 1.0, 0.15,
-		1.0, -1.0, -1.0,    0.0, 1.0, 0.15,
+		1.0, -1.0, -1.0,    1.0, 0.0, 0.15,
 		-1.0, -1.0, -1.0,    0.0, 1.0, 0.15,
-		-1.0, 1.0, -1.0,    0.0, 1.0, 0.15,
+		-1.0, 1.0, -1.0,     1.0, 0.0, 0.15,
 
 		// Bottom
 		-1.0, -1.0, -1.0,   0.5, 0.5, 1.0,
-		-1.0, -1.0, 1.0,    0.5, 0.5, 1.0,
+		-1.0, -1.0, 1.0,    0.0, 1.0, 0.15,
 		1.0, -1.0, 1.0,     0.5, 0.5, 1.0,
-		1.0, -1.0, -1.0,    0.5, 0.5, 1.0,
+		1.0, -1.0, -1.0,    0.0, 1.0, 0.15
 	];
 
 	var boxIndices =
@@ -187,6 +189,7 @@ var InitDemo = function () {
 
 	// Tell OpenGL state machine which program should be active.
 	gl.useProgram(program);
+	gl.uniform3f(gl.getUniformLocation(program, 'dim'), canvas.width, canvas.height, 100.0);
 
 	var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
 	var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
