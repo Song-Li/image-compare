@@ -27,7 +27,7 @@ var fragmentShaderText =
 'varying vec3 fragColor;',
 'void main()',
 '{',
-'  gl_FragColor = vec4(floor(fragColor * 255.0 / 4.0)/255.0 * 4.0, 1.0);',
+'  gl_FragColor = vec4(floor(fragColor * 255.0 / 3.0)/255.0 * 3.0, 1.0);',
 '  //gl_FragColor = vec4(0.0, 0.0, 0.0 , 1.0);',
 '}'
 ].join('\n');
@@ -90,9 +90,9 @@ var InitDemo = function () {
 	//
 	var triangleVertices = 
 	[ // X, Y,       R, G, B
-		-0.7, 1.0,    1.0, 1.0, 0.0,
-		-0.8, -0.8,  0.7, 0.0, 1.0,
-		0.7, -0.5,   0.1, 1.0, 0.6
+		-0.7, 1.0,    0.5, 0.5, 0.5,
+		-0.8, -0.8,  0.5, 0.5, 0.5,
+		0.7, -0.5,   0.5, 0.5, 0.5
 	];
 
 	var triangleVertexBufferObject = gl.createBuffer();
