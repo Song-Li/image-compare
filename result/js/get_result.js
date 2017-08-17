@@ -161,7 +161,10 @@ function subtract() {
       imgData.data[w+1] = sub_data.dif[i][1];
       imgData.data[w+2] = sub_data.dif[i][2];
       imgData.data[w+3] = 255;
-      if(sub_data.dif[i][0] != 0||sub_data.dif[i][1] != 0|| sub_data.dif[i][2] != 0)count++;
+      if(sub_data.dif[i][0] != 0||sub_data.dif[i][1] != 0|| sub_data.dif[i][2] != 0){
+        console.log("diff: " + sub_data.dif[i][0] + "," + sub_data.dif[i][1] + "," + sub_data.dif[i][2]);
+        count++;
+      }
       i++;
   }
   console.log("diff pixel: " + count);
