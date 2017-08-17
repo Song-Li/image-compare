@@ -155,13 +155,16 @@ function subtract() {
   canvas.height = canvas.width;
   var imgData = ctx.createImageData(canvas.width, canvas.height);
   var i = 0;
+  var count = 0;
   for (var w = 0; w < imgData.data.length; w+=4) {
       imgData.data[w+0] = sub_data.dif[i][0];
       imgData.data[w+1] = sub_data.dif[i][1];
       imgData.data[w+2] = sub_data.dif[i][2];
       imgData.data[w+3] = 255;
       i++;
+      if(sub_data.dif[i][0] != 0||sub_data.dif[i][1] != 0|| sub_data.dif[i][2] != 0)count++;
   }
+  console.log("diff pixel: " + count);
   ctx.putImageData(imgData, 0, 0);
   $('#subtract').append(canvas);
 
