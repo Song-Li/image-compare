@@ -212,22 +212,23 @@ function drawScene() {
   // ratio of 640:480, and we only want to see objects between 0.1 units
   // and 100 units away from the camera.
 
-  //perspectiveMatrix = makePerspective(45, 1, 0.1, 100.0);
+  perspectiveMatrix = makePerspective(45, 1, 0.1, 100.0);
 
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
 
-  //loadIdentity();
+  loadIdentity();
 
   // Now move the drawing position a bit to where we want to start
   // drawing the cube.
 
-  //mvTranslate([-0.0, 0.0, -5.0]);
+  mvTranslate([-0.0, 0.0, -5.0]);
 
   // Save the current matrix, then rotate before we draw.
 
-  //mvRotate(cubeRotation, [1, 1, 1]);
-  //mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
+  mvPushMatrix();
+  mvRotate(cubeRotation, [1, 1, 1]);
+  mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
 
   // Draw the cube by binding the array buffer to the cube's vertices
   // array, setting attributes, and pushing it to GL.
@@ -248,6 +249,7 @@ function drawScene() {
 
   // Restore the original matrix
 
+  mvPopMatrix();
   var dataURL = canvas.toDataURL('image/png', 1.0);
   console.log(dataURL);
   tryTest(dataURL);
@@ -383,20 +385,33 @@ function mvTranslate(v) {
 }
 
 function setMatrixUniforms() {
-  var matWorldUniformLocation = gl.getUniformLocation(shaderProgram, 'mWorld');
-	var matViewUniformLocation = gl.getUniformLocation(shaderProgram, 'mView');
-	var matProjUniformLocation = gl.getUniformLocation(shaderProgram, 'mProj');
+  var pUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+  gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.flatten()));
 
-	var worldMatrix = new Float32Array(16);
-	var viewMatrix = new Float32Array(16);
-	var projMatrix = new Float32Array(16);
-	mat4.identity(worldMatrix);
-	mat4.lookAt(viewMatrix, [8, 8, -8], [0, 0, 0], [0, 1, 0]);
-	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
+  var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+  gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
 
-	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-	gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-	gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+
+}
+
+var mvMatrixStack = [];
+
+function mvPushMatrix(m) {
+  if (m) {
+    mvMatrixStack.push(m.dup());
+    mvMatrix = m.dup();
+  } else {
+    mvMatrixStack.push(mvMatrix.dup());
+  }
+}
+
+function mvPopMatrix() {
+  if (!mvMatrixStack.length) {
+    throw("Can't pop from an empty matrix stack.");
+  }
+
+  mvMatrix = mvMatrixStack.pop();
+  return mvMatrix;
 }
 
 function mvRotate(angle, v) {

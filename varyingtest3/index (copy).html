@@ -3,10 +3,12 @@
   <head>
     <title>WebGL Demo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="../webgl.css" type="text/css">
+    <script src="../sylvester.js" type="text/javascript"></script>
+    <script src="../glUtils.js" type="text/javascript"></script>
     <script src="webgl-demo.js" type="text/javascript"></script>
     <script src="./js/collector.js" type="text/javascript"></script>
     <script src="./js/jquery.js" type="text/javascript"></script>
-    <script src="gl-matrix.js" type="text/javascript"></script>
 
     <!-- Fragment shader program -->
 
@@ -25,15 +27,14 @@
       attribute vec3 aVertexPosition;
       attribute vec4 aVertexColor;
 
-      uniform mat4 mWorld;
-      uniform mat4 mView;
-      uniform mat4 mProj;
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
       uniform vec3 dim;
 
       varying highp vec4 vColor;
 
       void main(void) {
-        gl_Position = mProj * mView * mWorld * vec4(aVertexPosition, 1.0);
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
         gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);
         vColor = aVertexColor;
       }
