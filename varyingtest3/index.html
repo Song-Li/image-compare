@@ -11,7 +11,8 @@
     <!-- Fragment shader program -->
 
     <script id="shader-fs" type="x-shader/x-fragment">
-      varying highp vec4 vColor;
+      precision mediump float;
+      varying vec4 vColor;
 
       void main(void) {
         //gl_FragColor = vColor;
@@ -22,6 +23,7 @@
     <!-- Vertex shader program -->
 
     <script id="shader-vs" type="x-shader/x-vertex">
+      precision mediump float;
       attribute vec3 aVertexPosition;
       attribute vec4 aVertexColor;
 
@@ -30,7 +32,7 @@
       uniform mat4 mProj;
       uniform vec3 dim;
 
-      varying highp vec4 vColor;
+      varying vec4 vColor;
 
       void main(void) {
         gl_Position = mProj * mView * mWorld * vec4(aVertexPosition, 1.0);

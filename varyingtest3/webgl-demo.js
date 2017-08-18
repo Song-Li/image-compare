@@ -366,22 +366,6 @@ function getShader(gl, id) {
   return shader;
 }
 
-//
-// Matrix utility functions
-//
-
-function loadIdentity() {
-  mvMatrix = Matrix.I(4);
-}
-
-function multMatrix(m) {
-  mvMatrix = mvMatrix.x(m);
-}
-
-function mvTranslate(v) {
-  multMatrix(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
-}
-
 function setMatrixUniforms() {
   var matWorldUniformLocation = gl.getUniformLocation(shaderProgram, 'mWorld');
 	var matViewUniformLocation = gl.getUniformLocation(shaderProgram, 'mView');
@@ -397,11 +381,4 @@ function setMatrixUniforms() {
 	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 	gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 	gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-}
-
-function mvRotate(angle, v) {
-  var inRadians = angle * Math.PI / 180.0;
-
-  var m = Matrix.Rotation(inRadians, $V([v[0], v[1], v[2]])).ensure4x4();
-  multMatrix(m);
 }
