@@ -11,8 +11,9 @@ attribute vec2 aVertexTextureCoord;
 varying highp vec2 vTextureCoord;
 uniform vec3 dim;
 void main(void){
-	aPos = (2.0*floor(((aPos+1.0)*dim)/2.0))/dim-1.0;
-    gl_Position = vec4(aPos, 1);
+	vec3 pos = aPos;
+	pos = (2.0*floor(((pos+1.0)*dim)/2.0))/dim-1.0;
+    gl_Position = vec4(pos, 1);
     vTextureCoord = aVertexTextureCoord;
 }
 </script>
