@@ -21,7 +21,8 @@ void main(void){
 varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
-    //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	/*
 	gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
 	gl_FragColor.x = floor(gl_FragColor.x * 10000.0) /10000.0 ;
 	gl_FragColor.y = floor(gl_FragColor.y *10000.0) /10000.0 ;
@@ -30,7 +31,7 @@ void main(void) {
 	if(gl_FragColor.y*255.0 - floor(gl_FragColor.y*255.0) >= 0.5)gl_FragColor.y -= 0.5/255.0;
 	if(gl_FragColor.z*255.0 - floor(gl_FragColor.z*255.0) >= 0.5)gl_FragColor.z -= 0.5/255.0;
 	gl_FragColor.w = 1.0;
-	
+	*/
 	//x1 = floor(gl_FragColor.x / 2.0) * 2.0;
 	//y1 = floor(gl_FragColor.y / 2.0) * 2.0;
 	//z1 = floor(gl_FragColor.z / 2.0) * 2.0;
