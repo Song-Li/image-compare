@@ -11,9 +11,9 @@ attribute vec2 aVertexTextureCoord;
 varying highp vec2 vTextureCoord;
 uniform vec3 dim;
 void main(void){
-	vec3 pos = aPos;
-	pos = (2.0*floor(((pos+1.0)*dim)/2.0))/dim-1.0;
-    gl_Position = vec4(pos, 1);
+	//vec3 pos = aPos;
+	//pos = (2.0*floor(((pos+1.0)*dim)/2.0))/dim-1.0;
+    gl_Position = vec4(aPos, 1);
     vTextureCoord = aVertexTextureCoord;
 }
 </script>
@@ -23,11 +23,11 @@ uniform sampler2D uSampler;
 void main(void) {
     gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 	
-	/*gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;*/
+	/*gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
 	
 	gl_FragColor.x = floor(gl_FragColor.x * 100.0) /100.0 ;
 	gl_FragColor.y = floor(gl_FragColor.y *100.0) /100.0 ;
-	gl_FragColor.z = floor(gl_FragColor.z  *100.0 ) /100.0 ;
+	gl_FragColor.z = floor(gl_FragColor.z  *100.0 ) /100.0 ;*/
 	/*if(gl_FragColor.x*255.0 - floor(gl_FragColor.x*255.0) >= 0.5)gl_FragColor.x -= 0.0196;
 	if(gl_FragColor.y*255.0 - floor(gl_FragColor.y*255.0) >= 0.5)gl_FragColor.y -= 0.0196;
 	if(gl_FragColor.z*255.0 - floor(gl_FragColor.z*255.0) >= 0.5)gl_FragColor.z -= 0.0196;
