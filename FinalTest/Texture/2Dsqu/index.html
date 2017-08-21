@@ -21,11 +21,11 @@ void main(void){
 varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
-    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-	//gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
-	//gl_FragColor.x = floor(gl_FragColor.x / 16.0) * 16.0  / 255.0;
-	//gl_FragColor.y = floor(gl_FragColor.y / 16.0) * 16.0  / 255.0;
-	//gl_FragColor.z = floor(gl_FragColor.z / 16.0) * 16.0  / 255.0;
+    //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
+	gl_FragColor.x = floor(gl_FragColor.x / 6.0) * 6.0  / 255.0;
+	gl_FragColor.y = floor(gl_FragColor.y / 6.0) * 6.0  / 255.0;
+	gl_FragColor.z = floor(gl_FragColor.z / 6.0) * 6.0  / 255.0;
 }
 </script>
 </head>
