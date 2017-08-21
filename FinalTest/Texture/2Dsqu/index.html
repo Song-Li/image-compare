@@ -67,7 +67,7 @@ function initShaders() {
     }
     // use program
     gl.useProgram(glProgram);
-	gl.uniform2f(gl.getUniformLocation(glprogram, 'dim'), canvas.width, canvas.height);
+	gl.uniform2f(gl.getUniformLocation(glProgram, 'dim'), canvas.width, canvas.height);
 }
 
 function makeShader(src, type) {
