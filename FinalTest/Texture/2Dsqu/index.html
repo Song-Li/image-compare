@@ -23,9 +23,9 @@ uniform sampler2D uSampler;
 void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 	gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0);
-	gl_FragColor.x = floor(gl_FragColor.x / 2.0) * 2.0  / 255.0;
-	gl_FragColor.y = floor(gl_FragColor.y / 2.0) * 2.0  / 255.0;
-	gl_FragColor.z = floor(gl_FragColor.z / 2.0) * 2.0  / 255.0;
+	gl_FragColor.x = floor(gl_FragColor.x / 4.0) * 4.0  / 255.0;
+	gl_FragColor.y = floor(gl_FragColor.y / 4.0) * 4.0  / 255.0;
+	gl_FragColor.z = floor(gl_FragColor.z / 4.0) * 4.0  / 255.0;
 }
 </script>
 </head>
