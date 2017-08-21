@@ -9,7 +9,7 @@
 attribute vec3 aPos;
 attribute vec2 aVertexTextureCoord;
 varying highp vec2 vTextureCoord;
-uniform vec2 dim;
+uniform vec3 dim;
 void main(void){
 	aPos = (2.0*floor(((aPos+1.0)*dim)/2.0))/dim-1.0;
     gl_Position = vec4(aPos, 1);
@@ -67,7 +67,7 @@ function initShaders() {
     }
     // use program
     gl.useProgram(glProgram);
-	gl.uniform2f(gl.getUniformLocation(glProgram, 'dim'), canvas.width, canvas.height);
+	gl.uniform3f(gl.getUniformLocation(glProgram, 'dim'), canvas.width, canvas.height,1.0);
 }
 
 function makeShader(src, type) {
