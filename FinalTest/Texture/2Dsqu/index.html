@@ -22,7 +22,7 @@ varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-	gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0) / 255.0;
+	gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0 / 2.0) / 255.0 * 2.0;
 }
 </script>
 </head>
@@ -39,7 +39,7 @@ var texture = null;
 
 function setupContext(){
     try {
-       gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+       gl = canvas.getContext("webgl",{antialias: false}) || canvas.getContext("experimental-webgl",{antialias: false});
     }catch(e){
     }
     if (gl) {
