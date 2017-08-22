@@ -15,7 +15,8 @@ void main(void){
 	pos = (2.0*floor(((pos+1.0)*dim)/2.0))/dim-1.0;
     //gl_Position = vec4(aPos, 1);
 	gl_Position = vec4(pos, 1);
-    vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
+    //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
+	vTextureCoord = aVertexTextureCoord;
 }
 </script>
 <script id="shader-fs" type="x-shader/x-fragment">
@@ -23,8 +24,8 @@ varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-	gl_FragColor =  texture2D(uSampler, floor(vTextureCoord * 255.0)/ 255.0);
-	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * 256.0) / 256.0)* 255.0) / 255.0;
+	//gl_FragColor =  texture2D(uSampler, floor(vTextureCoord * 255.0)/ 255.0);
+	gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * 256.0) / 256.0)* 255.0) / 255.0;
 	//gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
 	/*
 	gl_FragColor.x = floor(gl_FragColor.x * 100.0) /100.0 ;
