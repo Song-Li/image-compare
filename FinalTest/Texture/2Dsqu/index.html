@@ -17,7 +17,11 @@ void main(void){
 	gl_Position = vec4(pos, 1);
     //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
 	vTextureCoord = aVertexTextureCoord;
-  vTextureCoord.y += 0.1;
+  vTextureCoord.y = 0.0;
+  if(vTextureCoord.x == 1.0/8.0)vTextureCoord.x = 0.0;
+  if(vTextureCoord.x == 3.0/8.0)vTextureCoord.x = 0.0;
+  if(vTextureCoord.x == 5.0/8.0)vTextureCoord.x = 0.0;
+  if(vTextureCoord.x == 7.0/8.0)vTextureCoord.x = 0.0;
 }
 </script>
 <script id="shader-fs" type="x-shader/x-fragment">
