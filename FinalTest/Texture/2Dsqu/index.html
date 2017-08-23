@@ -12,11 +12,12 @@ varying highp vec2 vTextureCoord;
 uniform vec3 dim;
 void main(void){
 	vec3 pos = aPos;
-	//pos = (2.0*floor(((pos+1.0)*dim)/2.0))/dim-1.0;
+	pos = floor(pos*dim)/dim;
     //gl_Position = vec4(aPos, 1);
-	gl_Position = vec4(aPos, 1);
+	gl_Position = vec4(pos, 1);
     //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
-	//vTextureCoord = aVertexTextureCoord;
+	vTextureCoord = aVertexTextureCoord;
+  vTextureCoord.y = 0.0;
 }
 </script>
 <script id="shader-fs" type="x-shader/x-fragment">
@@ -26,7 +27,7 @@ void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
 	//gl_FragColor =  texture2D(uSampler, floor(vTextureCoord * 255.0)/ 255.0);
 	//gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
-	gl_FragColor = floor (texture2D(uSampler, vec2(50.0,50.0))* 255.0) / 255.0;
+	gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
   //gl_FragColor = vec4(1.0,0.4, 0.2, 1.0);
 	//gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
 	/*
@@ -178,8 +179,8 @@ function draw () {
     
     // set texture coordinate attribute
     var vertexTexCoordAttribute = gl.getAttribLocation(glProgram, "aVertexTextureCoord");
-    gl.enableVertexAttribArray(vertexTexCoordAttribute);
     gl.vertexAttribPointer(vertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexTexCoordAttribute);
     
     // bind texture and set the sampler
     gl.activeTexture(gl.TEXTURE0);
