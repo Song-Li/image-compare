@@ -27,13 +27,14 @@ uniform sampler2D uSampler;
 void main(void) {
 
     gl_FragColor = (
-	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.1 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-	+ texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.1 && vTextureCoord.y>=0.1 && vTextureCoord.y<0.9 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-	+ texture2D(uSampler, vTextureCoord.x>=0.2 && vTextureCoord.x<0.3 && vTextureCoord.y>=0.2 && vTextureCoord.y<0.3 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-	+ texture2D(uSampler, vTextureCoord.x>=0.3 && vTextureCoord.x<0.4 && vTextureCoord.y>=0.3 && vTextureCoord.y<0.4 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0))
+	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.125 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+  + texture2D(uSampler, vTextureCoord.x>0.125 && vTextureCoord.x<0.375 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+	+ texture2D(uSampler, vTextureCoord.x>0.375 && vTextureCoord.x<0.525 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+	+ texture2D(uSampler, vTextureCoord.x>0.525 && vTextureCoord.x<0.875 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0))
+	-texture2D(uSampler, vec2(0.0,0.0))-texture2D(uSampler, vec2(0.0,0.0))
 );
-	
-	gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
+
+	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
 	//gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
 	//gl_FragColor =  texture2D(uSampler, floor(vTextureCoord * 255.0)/ 255.0);
 	//gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
@@ -215,7 +216,7 @@ function createTexture (source) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.bindTexture(gl.TEXTURE_2D, null);
     return texture;
 }
