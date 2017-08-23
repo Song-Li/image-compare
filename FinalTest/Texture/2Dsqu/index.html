@@ -18,7 +18,7 @@ void main(void){
     //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
 	vTextureCoord = aVertexTextureCoord;
   vTextureCoord.y = 0.0;
-  if(vTextureCoord.x == 0.0) vTextureCoord.x = 0.5;
+  if(vTextureCoord.x == 0.0) vTextureCoord.x = 0.75;
 }
 </script>
 <script id="shader-fs" type="x-shader/x-fragment">
