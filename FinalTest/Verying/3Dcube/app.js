@@ -14,7 +14,7 @@ var vertexShaderText =
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'  gl_Position = vec4(((floor(((gl_Position.xyz+1.0)*dim)))/dim-1.0), gl_Position.w);',
+'  gl_Position = vec4(floor((gl_Position.xyz+1.0)/2.0*dim)/dim * 2.0-1.0, gl_Position.w);',
 '}'
 ].join('\n');
 
