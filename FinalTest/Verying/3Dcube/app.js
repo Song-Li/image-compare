@@ -133,7 +133,7 @@ var InitDemo = function () {
 		
 		
 	];
-/*
+
 	var boxIndices =
 	[
 		// Top
@@ -160,13 +160,13 @@ var InitDemo = function () {
 		21, 20, 22,
 		22, 20, 23
 	];
-*/
+/*
 	var boxIndices =
 	[
 		// Top
 		0, 1, 2
 
-	];
+	];*/
 	var boxVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
