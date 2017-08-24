@@ -14,7 +14,7 @@ var vertexShaderText =
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'  gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
+'  gl_Position = vec4(((floor(((gl_Position.xyz+1.0)*dim)))/dim-1.0), gl_Position.w);',
 '}'
 ].join('\n');
 
@@ -25,7 +25,7 @@ var fragmentShaderText =
 'varying vec3 fragColor;',
 'void main()',
 '{',
-'  gl_FragColor = vec4(floor(fragColor * 255.0 / 2.0)/255.0 * 2.0 , 1.0);',
+'  gl_FragColor = vec4(floor(fragColor * 255.0)/255.0  , 1.0);',
 '}'
 ].join('\n');
 
