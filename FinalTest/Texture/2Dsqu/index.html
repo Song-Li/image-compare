@@ -27,11 +27,11 @@ uniform sampler2D uSampler;
 void main(void) {
 
     gl_FragColor = (
-	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.125 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-  + texture2D(uSampler, vTextureCoord.x>0.125 && vTextureCoord.x<0.375 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-	+ texture2D(uSampler, vTextureCoord.x>0.375 && vTextureCoord.x<0.525 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
-	+ texture2D(uSampler, vTextureCoord.x>0.525 && vTextureCoord.x<0.875 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0))
-	-texture2D(uSampler, vec2(0.0,0.0))-texture2D(uSampler, vec2(0.0,0.0))
+	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.11718 && vTextureCoord.y>=0.0 && vTextureCoord.y<1.0 ?vec2(vTextureCoord.x, 0.5):vec2(0.0,0.0))
+   + texture2D(uSampler, vTextureCoord.x>=0.11718 && vTextureCoord.x<=0.12890 && vTextureCoord.y>=0.0 && vTextureCoord.y<1.0 ?vec2(0.0, 0.0):vec2(0.0,0.0))	
+  + texture2D(uSampler, vTextureCoord.x>0.12890 && vTextureCoord.x<0.2461 && vTextureCoord.y>=0.0 && vTextureCoord.y<1.0 ?vec2(vTextureCoord.x, 0.5):vec2(0.0,0.0)) 
+	
+	
 );
 
 	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
@@ -134,21 +134,21 @@ var vertex = [
     1.0, 1.0, 0.0
 ];
 
-
+*/
 var vertex = [
     -0.5, -0.5, 0.0,
     -0.5, 0.5, 0.0,
     0.5, -0.5, 0.0,
     0.5, 0.5, 0.0
 ];
-*/
+/*
 var vertex = [
     -1.0, -1.0, 0.0,
     -1.0, 1.0, 0.0,
     1.0, -1.0, 0.0,
     1.0, 1.0, 0.0
 ];
-/*
+
 
 
 var vertex = [
