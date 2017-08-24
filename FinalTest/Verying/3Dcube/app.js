@@ -164,8 +164,7 @@ var InitDemo = function () {
 	var boxIndices =
 	[
 		// Top
-		0, 1, 2,
-		0, 24, 3,
+		0, 1, 2
 
 	];
 	var boxVertexBufferObject = gl.createBuffer();
