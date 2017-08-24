@@ -151,24 +151,39 @@ function subtract() {
 
   var canvas = document.createElement('canvas');
   var ctx = canvas.getContext('2d');
-  canvas.width = Math.sqrt(sub_data.dif.length);
-  canvas.height = canvas.width;
+  width = sub_data.width;
+  height = sub_data.height;
+  canvas.width = width;
+  canvas.height = height;
   var imgData = ctx.createImageData(canvas.width, canvas.height);
   var i = 0;
   var count = 0;
+  var xd = {};
+  var yd = {};
   for (var w = 0; w < imgData.data.length; w+=4) {
       imgData.data[w+0] = sub_data.dif[i][0];
       imgData.data[w+1] = sub_data.dif[i][1];
       imgData.data[w+2] = sub_data.dif[i][2];
       imgData.data[w+3] = 255;
       if(sub_data.dif[i][0] != 0||sub_data.dif[i][1] != 0|| sub_data.dif[i][2] != 0){
+        console.log("pos: " + Math.floor(i/width) + "," + i%width);
         console.log("diff: " + sub_data.dif[i][0] + "," + sub_data.dif[i][1] + "," + sub_data.dif[i][2]);
         console.log("p1: " + sub_data.im1[i][0] + "," + sub_data.im1[i][1] + "," + sub_data.im1[i][2]);
         console.log("p2: " + sub_data.im2[i][0] + "," + sub_data.im2[i][1] + "," + sub_data.im2[i][2]);
+        if(Math.floor(i/width) in xd)xd[Math.floor(i/width)] += 1;
+        else xd[Math.floor(i/width)] = 1;
+        if((i%width) in yd)yd[i%width] += 1;
+        else yd[i%width] = 1;
         count++;
       }
       i++;
   }
+  for(x in xd)
+    if(xd[x] > 10)
+      console.log("dif at x " + x + ": " + xd[x]);
+  for(y in yd)
+    if(yd[y] > 10)
+      console.log("dif at y " + y + ": " + yd[y]);
   console.log("diff pixel: " + count);
   ctx.putImageData(imgData, 0, 0);
   $('#subtract').append(canvas);

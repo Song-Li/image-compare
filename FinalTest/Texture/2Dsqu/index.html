@@ -12,7 +12,7 @@ varying highp vec2 vTextureCoord;
 uniform vec3 dim;
 void main(void){
 	vec3 pos = aPos;
-	pos = floor(pos*dim)/dim;
+	pos = floor((pos + 1.0)*dim)/dim - 1.0;
     //gl_Position = vec4(aPos, 1);
 	gl_Position = vec4(pos, 1);
     //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
@@ -25,18 +25,18 @@ void main(void){
 varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
-
+/*
     gl_FragColor = (
 	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.125 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
   + texture2D(uSampler, vTextureCoord.x>0.125 && vTextureCoord.x<0.375 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
 	+ texture2D(uSampler, vTextureCoord.x>0.375 && vTextureCoord.x<0.525 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
 	+ texture2D(uSampler, vTextureCoord.x>0.525 && vTextureCoord.x<0.875 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0))
 	-texture2D(uSampler, vec2(0.0,0.0))-texture2D(uSampler, vec2(0.0,0.0))
-);
+);*/
 
-	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
+	gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * vec2(48.5, 98.5)) / vec2(48.5, 98.5))* 255.0) / 255.0;
 	//gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
-	//gl_FragColor =  texture2D(uSampler, floor(vTextureCoord * 255.0)/ 255.0);
+	//gl_FragColor =  floor(texture2D(uSampler, vTextureCoord) * 255.0)/ 255.0;
 	//gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
 	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
 	
@@ -67,7 +67,7 @@ void main(void) {
 </script>
 </head>
 <body>
-<canvas id="canvas" width="300" height="300"></canvas>
+<canvas id="canvas" width="700" height="700"></canvas>
 <script>
 var canvas = document.getElementById('canvas');
 var gl = null;
@@ -128,13 +128,13 @@ function getUniforms() {
 }
 /*
 var vertex = [
-    -1.0, -1.0, 0.0,
-    -0.2, 0.5, 0.0,
-    0.7, -0.8, 0.0,
-    1.0, 1.0, 0.0
-];
+    3.0/7.0-1.0, 1.0, 0.0,
+    -1.0, 4.0/7.0-1.0, 0.0,
+    4/7-1, -1.0, 0.0,
+    1.0, 3/7-1, 0.0
+];*/
 
-
+/*
 var vertex = [
     -0.5, -0.5, 0.0,
     -0.5, 0.5, 0.0,
@@ -148,16 +148,16 @@ var vertex = [
     1.0, -1.0, 0.0,
     1.0, 1.0, 0.0
 ];
+
+
 /*
-
-
 var vertex = [
     -0.07, -1.0, 0.0,
     -1.0, 0.7, 0.0,
     1.0, -0.7, 0.0,
     0.05, 1.0, 0.0
-];
-*/
+];*/
+
 var vertexIndice = [
     0, 1, 2,
     2, 1, 3
@@ -167,6 +167,8 @@ var triangleTexCoords = [
     0.0, 0.0,
     0.0, 1.0,
     1.0, 0.0,
+    1.0, 1.0,
+    1.0, 1.0,
     1.0, 1.0
 ];
 
@@ -227,7 +229,7 @@ function loadTextureImage () {
         texture = createTexture(this);
         draw();
     };
-    img.src = '../RGB/2.png';
+    img.src = './3.png';
 	//img.src = '2.png';
 }
 
