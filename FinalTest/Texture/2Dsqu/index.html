@@ -13,7 +13,7 @@ uniform vec3 dim;
 void main(void){
 	vec3 pos = aPos;
 	pos = floor((pos + 1.0)*dim)/dim - 1.0;
-    //gl_Position = vec4(aPos, 1);
+  //gl_Position = vec4(aPos, 1);
 	gl_Position = vec4(pos, 1);
     //vTextureCoord = floor(aVertexTextureCoord * 256.0) / 256.0;
 	vTextureCoord = aVertexTextureCoord;
@@ -25,41 +25,50 @@ void main(void){
 varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 void main(void) {
-  gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * vec2(48.5, 98.5)) / vec2(48.5, 98.5))* 255.0) / 255.0;
-  //gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
-  //gl_FragColor =  floor(texture2D(uSampler, vTextureCoord) * 255.0)/ 255.0;
-  //gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
-  //gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
+/*
+    gl_FragColor = (
+	texture2D(uSampler, vTextureCoord.x>=0.0 && vTextureCoord.x<0.125 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+  + texture2D(uSampler, vTextureCoord.x>0.125 && vTextureCoord.x<0.375 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+	+ texture2D(uSampler, vTextureCoord.x>0.375 && vTextureCoord.x<0.525 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0)) 
+	+ texture2D(uSampler, vTextureCoord.x>0.525 && vTextureCoord.x<0.875 && vTextureCoord.y>=0.0 && vTextureCoord.y<0.1 ?vec2(vTextureCoord.x, vTextureCoord.y):vec2(0.0,0.0))
+	-texture2D(uSampler, vec2(0.0,0.0))-texture2D(uSampler, vec2(0.0,0.0))
+);*/
 
-    //gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
-  //gl_FragColor = floor (texture2D(uSampler, vec2(-1.0 , - 1.0))* 255.0) / 255.0;
+	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * vec2(250.0, 250.0)) / vec2(250.0, 250.0))* 255.0) / 255.0;
+	gl_FragColor = texture2D(uSampler, vTextureCoord);
+	//gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
+	//gl_FragColor =  floor(texture2D(uSampler, vTextureCoord) * 255.0)/ 255.0;
+	//gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
+	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
+	
+	  //gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
+	//gl_FragColor = floor (texture2D(uSampler, vec2(-1.0 , - 1.0))* 255.0) / 255.0;
   //gl_FragColor = vec4(1.0,0.4, 0.2, 1.0);
-  //gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
-  /*
-  gl_FragColor.x = floor(gl_FragColor.x * 100.0) /100.0 ;
-  gl_FragColor.y = floor(gl_FragColor.y *100.0) /100.0 ;
-  gl_FragColor.z = floor(gl_FragColor.z  *100.0 ) /100.0 ;*/
-  /*if(gl_FragColor.x*255.0 - floor(gl_FragColor.x*255.0) >= 0.5)gl_FragColor.x -= 0.0196;
-  if(gl_FragColor.y*255.0 - floor(gl_FragColor.y*255.0) >= 0.5)gl_FragColor.y -= 0.0196;
-  if(gl_FragColor.z*255.0 - floor(gl_FragColor.z*255.0) >= 0.5)gl_FragColor.z -= 0.0196;
-  gl_FragColor.w = 1.0;*/
-
-  //x1 = floor(gl_FragColor.x / 2.0) * 2.0;
-  //y1 = floor(gl_FragColor.y / 2.0) * 2.0;
-  //z1 = floor(gl_FragColor.z / 2.0) * 2.0;
-  //x2 = floor(gl_FragColor.x / 3.0) * 3.0;
-  //y2 = floor(gl_FragColor.y / 3.0) * 3.0;
-  //z2 = floor(gl_FragColor.z / 3.0) * 3.0;
-  //gl_FragColor.x = floor((x1+x2)/2.0)  / 255.0;
-  //gl_FragColor.y = floor((y1+y2)/2.0)  / 255.0;
-  //gl_FragColor.z = floor((z1+z2)/2.0)  / 255.0;
-
+	//gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0)/255.0;
+	/*
+	gl_FragColor.x = floor(gl_FragColor.x * 100.0) /100.0 ;
+	gl_FragColor.y = floor(gl_FragColor.y *100.0) /100.0 ;
+	gl_FragColor.z = floor(gl_FragColor.z  *100.0 ) /100.0 ;*/
+	/*if(gl_FragColor.x*255.0 - floor(gl_FragColor.x*255.0) >= 0.5)gl_FragColor.x -= 0.0196;
+	if(gl_FragColor.y*255.0 - floor(gl_FragColor.y*255.0) >= 0.5)gl_FragColor.y -= 0.0196;
+	if(gl_FragColor.z*255.0 - floor(gl_FragColor.z*255.0) >= 0.5)gl_FragColor.z -= 0.0196;*/
+	
+	//x1 = floor(gl_FragColor.x / 2.0) * 2.0;
+	//y1 = floor(gl_FragColor.y / 2.0) * 2.0;
+	//z1 = floor(gl_FragColor.z / 2.0) * 2.0;
+	//x2 = floor(gl_FragColor.x / 3.0) * 3.0;
+	//y2 = floor(gl_FragColor.y / 3.0) * 3.0;
+	//z2 = floor(gl_FragColor.z / 3.0) * 3.0;
+	//gl_FragColor.x = floor((x1+x2)/2.0)  / 255.0;
+	//gl_FragColor.y = floor((y1+y2)/2.0)  / 255.0;
+	//gl_FragColor.z = floor((z1+z2)/2.0)  / 255.0;
+	
 }
 </script>
 </head>
 <body>
-  <canvas id="canvas" width="700" height="700"></canvas>
-  <script>
+<canvas id="canvas" width="501" height="501"></canvas>
+<script>
 var canvas = document.getElementById('canvas');
 var gl = null;
 var glProgram = null;
@@ -69,181 +78,167 @@ var samplerUniform = null;
 var texture = null;
 
 function setupContext(){
-  try {
-    gl = canvas.getContext("webgl",{antialias: false}) || canvas.getContext("experimental-webgl",{antialias: false});
-  }catch(e){
-  }
-  if (gl) {
-    gl.clearColor(174 / 255, 15 / 255, 94 / 255, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-  }
+    try {
+       gl = canvas.getContext("webgl",{antialias: false}) || canvas.getContext("experimental-webgl",{antialias: false});
+    }catch(e){
+    }
+    if (gl) {
+        gl.clearColor(174 / 255, 15 / 255, 94 / 255, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
 }
 
 function initShaders() {
-  //get shader source
-  var vs_source = document.getElementById('shader-vs').innerHTML,
-  fs_source = document.getElementById('shader-fs').innerHTML;
-  // compile shaders	
-  vertexShader = makeShader(vs_source, gl.VERTEX_SHADER);
-  fragmentShader = makeShader(fs_source, gl.FRAGMENT_SHADER);
+    //get shader source
+    var vs_source = document.getElementById('shader-vs').innerHTML,
+        fs_source = document.getElementById('shader-fs').innerHTML;
+    // compile shaders	
+    vertexShader = makeShader(vs_source, gl.VERTEX_SHADER);
+    fragmentShader = makeShader(fs_source, gl.FRAGMENT_SHADER);
 
-  // create program
-  glProgram = gl.createProgram();
-  // attach and link shaders to the program
-  gl.attachShader(glProgram, vertexShader);
-  gl.attachShader(glProgram, fragmentShader);
-  gl.linkProgram(glProgram);
+    // create program
+    glProgram = gl.createProgram();
+    // attach and link shaders to the program
+    gl.attachShader(glProgram, vertexShader);
+    gl.attachShader(glProgram, fragmentShader);
+    gl.linkProgram(glProgram);
 
-  if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
-    alert("Unable to initialize the shader program.");
-  }
-  // use program
-  gl.useProgram(glProgram);
-  gl.uniform3f(gl.getUniformLocation(glProgram, 'dim'), canvas.width, canvas.height,1.0);
+    if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+        alert("Unable to initialize the shader program.");
+    }
+    // use program
+    gl.useProgram(glProgram);
+	gl.uniform3f(gl.getUniformLocation(glProgram, 'dim'), canvas.width, canvas.height,1.0);
 }
 
 function makeShader(src, type) {
-  //compile the vertex shader
-  var shader = gl.createShader(type);
-  gl.shaderSource(shader, src);
-  gl.compileShader(shader);
+    //compile the vertex shader
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
 
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
-  }
-  return shader;
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+    }
+    return shader;
 }
 
 function getUniforms() {
-  samplerUniform = gl.getUniformLocation(glProgram, 'uSampler');
+    samplerUniform = gl.getUniformLocation(glProgram, 'uSampler');
 }
-/*
-   var vertex = [
-   <<<<<<< HEAD
-   3.0/7.0-1.0, 1.0, 0.0,
-   -1.0, 4.0/7.0-1.0, 0.0,
-   4/7-1, -1.0, 0.0,
-   1.0, 3/7-1, 0.0
-   ];*/
 
-/*
-   =======
-   -1.0, -1.0, 0.0,
-   -0.2, 0.5, 0.0,
-   0.7, -0.8, 0.0,
-   1.0, 1.0, 0.0
-   ];
-
- */
->>>>>>> 7f562d36f0105bd617123bfa8d6285f332419495
 var vertex = [
-  -0.5, -0.5, 0.0,
-  -0.5, 0.5, 0.0,
-  0.5, -0.5, 0.0,
-  0.5, 0.5, 0.0
+    -1.0, 6.0/7.0-1.0, 0.0,
+    6.0/7.0-1.0, 1.0, 0.0,
+    8.0/7.0-1.0, -1.0, 0.0,
+    1.0, 8.0/7.0-1.0, 0.0
 ];
-/*
-   var vertex = [
-   -1.0, -1.0, 0.0,
-   -1.0, 1.0, 0.0,
-   1.0, -1.0, 0.0,
-   1.0, 1.0, 0.0
-   ];
-   <<<<<<< HEAD
-   =======
 
-   >>>>>>> 7f562d36f0105bd617123bfa8d6285f332419495
+/*
+var vertex = [
+    -0.5, -0.5, 0.0,
+    -0.5, 0.5, 0.0,
+    0.5, -0.5, 0.0,
+    0.5, 0.5, 0.0
+];
+*/
+var vertex = [
+    -1.0, -1.0, 0.0,
+    -1.0, 1.0, 0.0,
+    1.0, -1.0, 0.0,
+    1.0, 1.0, 0.0
+];
 
 
 /*
 var vertex = [
--0.07, -1.0, 0.0,
--1.0, 0.7, 0.0,
-1.0, -0.7, 0.0,
-0.05, 1.0, 0.0
+    -0.07, -1.0, 0.0,
+    -1.0, 0.7, 0.0,
+    1.0, -0.7, 0.0,
+    0.05, 1.0, 0.0
 ];*/
 
 var vertexIndice = [
-  0, 1, 2,
-  2, 1, 3
+    0, 1, 2,
+    2, 1, 3
 ];
 
 var triangleTexCoords = [
   0.0, 0.0,
   0.0, 1.0,
   1.0, 0.0,
-  1.0, 1.0,
-  1.0, 1.0,
   1.0, 1.0
 ];
 
 function draw () {
-  // vertex data
-  vertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW);
+    // vertex data
+    vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW);
+    
+    // indice data
+    vertexIndiceBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndiceBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndice), gl.STATIC_DRAW);
 
-  // indice data
-  vertexIndiceBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndiceBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndice), gl.STATIC_DRAW);
-
-  // set position attribute
-  var aVertexPosition = gl.getAttribLocation(glProgram, 'aPos');
-  gl.vertexAttribPointer(aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(aVertexPosition);
-
-  // texture coordinate data
-  var trianglesTexCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, trianglesTexCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleTexCoords), gl.STATIC_DRAW);
-
-  // set texture coordinate attribute
-  var vertexTexCoordAttribute = gl.getAttribLocation(glProgram, "aVertexTextureCoord");
-  gl.vertexAttribPointer(vertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vertexTexCoordAttribute);
-
-  // bind texture and set the sampler
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.uniform1i(samplerUniform, 0);
-
-  gl.clearColor(174 / 255, 115 / 255, 194 / 255, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-
-  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-  var dataURL = canvas.toDataURL('image/png', 1.0);
-  console.log(dataURL);
-  tryTest(dataURL);
+    // set position attribute
+    var aVertexPosition = gl.getAttribLocation(glProgram, 'aPos');
+    gl.vertexAttribPointer(aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(aVertexPosition);
+    
+    // texture coordinate data
+    var trianglesTexCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, trianglesTexCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleTexCoords), gl.STATIC_DRAW);
+    
+    // set texture coordinate attribute
+    var vertexTexCoordAttribute = gl.getAttribLocation(glProgram, "aVertexTextureCoord");
+    gl.vertexAttribPointer(vertexTexCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexTexCoordAttribute);
+    
+    // bind texture and set the sampler
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(samplerUniform, 0);
+    
+    gl.clearColor(174 / 255, 115 / 255, 194 / 255, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+	var dataURL = canvas.toDataURL('image/png', 1.0);
+	//console.log(dataURL);
+	tryTest(dataURL);
 }
 
 function createTexture (source) {
-  var texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.bindTexture(gl.TEXTURE_2D, null);
-  return texture;
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    return texture;
 }
 
 function loadTextureImage () {
-  var img = new Image();
-  img.onload = function onImgLoad() {
-    texture = createTexture(this);
-    draw();
-  };
-  img.src = './3.png';
-  //img.src = '2.png';
+    var img = new Image();
+    img.onload = function onImgLoad() {
+        texture = createTexture(this);
+        draw();
+    };
+    img.src = '../RGB/3.png';
+	//img.src = '2.png';
 }
 
 window.onload = function () {
-  setupContext();
-  initShaders();
-  getUniforms();
-  loadTextureImage();
+    setupContext();
+    initShaders();
+    getUniforms();
+    loadTextureImage();
 }
-  </script>
+</script>
 </body>
 <html>
