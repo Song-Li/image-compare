@@ -192,6 +192,8 @@ var InitDemo = function () {
 	//
 	var boxTexture = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, boxTexture);
+	//gl.bindTexture(gl.TEXTURE_2D, boxTexture);
+	gl.activeTexture(gl.TEXTURE0);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -201,7 +203,7 @@ var InitDemo = function () {
 		gl.UNSIGNED_BYTE,
 		document.getElementById('crate-image')
 	);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+	//gl.bindTexture(gl.TEXTURE_2D, null);
 
 	// Tell OpenGL state machine which program should be active.
 	gl.useProgram(program);
@@ -214,7 +216,7 @@ var InitDemo = function () {
 	var viewMatrix = new Float32Array(16);
 	var projMatrix = new Float32Array(16);
 	mat4.identity(worldMatrix);
-	mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
+	mat4.lookAt(viewMatrix, [4, 4, -4], [0, 0, 0], [0, 1, 0]);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
@@ -227,6 +229,7 @@ var InitDemo = function () {
 	//
 	// Main render loop
 	//
+	/*
 	var identityMatrix = new Float32Array(16);
 	mat4.identity(identityMatrix);
 	var angle = 0;
@@ -247,5 +250,10 @@ var InitDemo = function () {
 
 		requestAnimationFrame(loop);
 	};
-	requestAnimationFrame(loop);
+	*/
+	gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+	//requestAnimationFrame(loop);
+	var dataURL = canvas.toDataURL('image/png', 1.0);
+    console.log(dataURL);
+    tryTest(dataURL);
 };
