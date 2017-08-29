@@ -32,6 +32,18 @@ var fragmentShaderText =
 var gl;
 
 var InitDemo = function () {
+/*	
+	// get image data
+	var myImg = new Image();
+	myImg.src = 'image.jpg';
+	var context = document.getElementById('canvas');
+	context.drawImage(myImg, 0, 0);
+	var imgd = context.getImageData(x, y, width, height);
+	var pix = imgd.data;
+	for (var i = 0, n = pix.length; i < n; i += 4) {
+	console.log pix[i+3]
+	}
+*/	
 	console.log('This is working');
 
 	var canvas = document.getElementById('game-surface');
@@ -45,7 +57,11 @@ var InitDemo = function () {
 	if (!gl) {
 		alert('Your browser does not support WebGL');
 	}
-
+	
+	
+	
+	
+	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.DEPTH_TEST);
@@ -91,54 +107,38 @@ var InitDemo = function () {
 	//
 	// Create buffer
 	//
-	var boxVertices = 
-	[ // X, Y, Z           R, G, B
-		// Top
-		-1.0, 1.0, -1.0,   1.0, 0.0, 0.0,
-		-1.0, 1.0, 1.0,    0.0, 1.0, 0.0,
-		1.0, 1.0, 1.0,     0.0, 0.0, 1.0,
-		1.0, 1.0, -1.0,    1.0, 1.0, 1.0,
+	var boxVertices = [];
+	var boxIndices = [];
+	var j = 0;
 
-		// Left
-		-1.0, 1.0, 1.0,    1.0, 0.0, 0.0,
-		-1.0, -1.0, 1.0,    0.0, 0.0, 1.0,
-		-0.5, -1.0, -1.0,  0.0, 1.0, 0.0,
-		-1.0, 1.0, -1.0,   1.0, 1.0, 1.0,
+	for (var i = -1; i < 0.91; i+= 0.1){
+		boxVertices = boxVertices.concat([i, 1.0, 1.0,    		(i + 1) / 2.0, 1.0, 1.0]);
+		boxVertices = boxVertices.concat([i + 0.1, 1.0, 1.0,    0.0,(i + 1.1) / 2.0, 1.0]);
+		boxVertices = boxVertices.concat([-1.0, -1.0, 1.0,    	1.0, 1.0, 1.0]);	
+		boxIndices = boxIndices.concat([j++ , j ++, j ++]);
+	}
+	for (var i = -1; i < 0.91; i+= 0.1){
+		boxVertices = boxVertices.concat([i + 0.1, -1.0, 1.0,    		(i + 1) / 2.0, 1.0, 1.0]);
+		boxVertices = boxVertices.concat([i , -1.0, 1.0,    0.0,(i + 1.1) / 2.0, 1.0]);
+		boxVertices = boxVertices.concat([1.0, 1.0, 1.0,    	0.5, 0.5, 0.5]);	
+		boxIndices = boxIndices.concat([j++ , j ++, j ++]);
+	}
+/*
+	var boxIndices = [];
+	boxIndices = boxIndices.concat([0,1,2]);
+	boxIndices = boxIndices.concat([3,4,5]);
+	boxIndices = boxIndices.concat([6,7,8]);
+	boxIndices = boxIndices.concat([9,10,11]);
+*/
 
-		// Right
-		1.0, 1.0, 1.0,    1.0, 0.0, 0.0,
-		1.0, -1.0, 1.0,    0.0, 0.0, 1.0,
-		1.0, -1.0, -1.0,  1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,   0.0, 1.0, 0.0,
-
-		// Front
-		1.0, 1.0, 1.0,    1.0, 0.0, 0.0,
-		1.0, -1.0, 1.0,    0.0, 1.0, 0.0,
-		-0.5, -1.0, 1.0,    1.0, 1.0, 1.0,
-		-1.0, 1.0, 1.0,     0.0, 0.0, 1.0,
-
-		// Back
-		1.0, 1.0, -1.0,    1.0, 0.0, 0.0,
-		1.0, -1.0, -1.0,    1.0, 1.0, 1.0,
-		-1.0, -1.0, -1.0,    0.0, 1.0, 0.0,
-		-1.0, 1.0, -1.0,      0.0, 0.0, 1.0,
-
-		// Bottom
-		-1.0, -1.0, -1.0,   1.0, 0.0, 0.0,
-		-1.0, -1.0, 1.0,    1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0,      0.0, 0.0, 1.0,
-		1.0, -1.0, -1.0,    0.0, 1.0, 0.0,
-		//
-		-1.0, 1.0, 1.0,    1.0, 1.0, 1.0
-		
-		
-	];
-
+/*	
 	var boxIndices =
 	[
 		// Top
 		0, 1, 2,
-		0, 2, 3,
+		3,4,5,
+		6,7,8,
+		9,10,11,
 
 		// Left
 		5, 4, 6,
@@ -159,13 +159,6 @@ var InitDemo = function () {
 		// Bottom
 		21, 20, 22,
 		22, 20, 23
-	];
-/*
-	var boxIndices =
-	[
-		// Top
-		0, 1, 2
-
 	];*/
 	var boxVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
@@ -209,7 +202,7 @@ var InitDemo = function () {
 	var viewMatrix = new Float32Array(16);
 	var projMatrix = new Float32Array(16);
 	mat4.identity(worldMatrix);
-	mat4.lookAt(viewMatrix, [8, 8, -8], [0, 0, 0], [0, 1, 0]);
+	mat4.lookAt(viewMatrix, [0, 0, -3.5], [0, 0, 0], [0, 1, 0]);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);

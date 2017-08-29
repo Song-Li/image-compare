@@ -35,8 +35,8 @@ void main(void) {
 );*/
 
 	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord * vec2(250.0, 250.0)) / vec2(250.0, 250.0))* 255.0) / 255.0;
-	gl_FragColor = texture2D(uSampler, vTextureCoord);
-	//gl_FragColor = texture2D(uSampler, vec2(1.0,1.0));
+	//gl_FragColor = texture2D(uSampler, vTextureCoord);
+	gl_FragColor = texture2D(uSampler, vec2(0.5,0.5));
 	//gl_FragColor =  floor(texture2D(uSampler, vTextureCoord) * 255.0)/ 255.0;
 	//gl_FragColor = floor(floor (texture2D(uSampler, floor(floor(vTextureCoord * 256.0) / 256.0 * 100.0) / 100.0)* 255.0) / 255.0 * 100.0) / 100.0;
 	//gl_FragColor = floor (texture2D(uSampler, floor(vTextureCoord *256.0) / 256.0)* 255.0) / 255.0;
@@ -126,7 +126,7 @@ function makeShader(src, type) {
 function getUniforms() {
     samplerUniform = gl.getUniformLocation(glProgram, 'uSampler');
 }
-
+/*
 var vertex = [
     -1.0, 6.0/7.0-1.0, 0.0,
     6.0/7.0-1.0, 1.0, 0.0,
@@ -134,7 +134,7 @@ var vertex = [
     1.0, 8.0/7.0-1.0, 0.0
 ];
 
-/*
+
 var vertex = [
     -0.5, -0.5, 0.0,
     -0.5, 0.5, 0.0,
