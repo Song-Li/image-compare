@@ -111,9 +111,9 @@ var InitDemo = function () {
 	var boxIndices = [];
 	var j = 0;
 
-	for (var i = -1; i < 0.91; i+= 0.1){
+	for (var i = -1; i < 0.95; i+= 0.1){
 		boxVertices = boxVertices.concat([i, 1.0, 1.0,    		(i + 1) / 2.0, 1.0, 1.0]);
-		boxVertices = boxVertices.concat([i + 0.1, 1.0, 1.0,    0.0,(i + 1.1) / 2.0, 1.0]);
+		boxVertices = boxVertices.concat([i + 0.05, 1.0, 1.0,    0.0,(i + 1.05) / 2.0, 1.0]);
 		boxVertices = boxVertices.concat([-1.0, -1.0, 1.0,    	1.0, 1.0, 1.0]);	
 		boxIndices = boxIndices.concat([j++ , j ++, j ++]);
 	}
