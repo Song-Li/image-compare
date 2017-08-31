@@ -62,7 +62,7 @@ var InitDemo = function () {
 	
 	
 	
-	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	gl.clearColor(0.2, 0.2, 0.2, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.CULL_FACE);
@@ -110,7 +110,7 @@ var InitDemo = function () {
 	var boxVertices = [];
 	var boxIndices = [];
 	var j = 0;
-
+/*
 	for (var i = -1; i < 0.95; i+= 0.05){
 		boxVertices = boxVertices.concat([i, 1.0, 1.0,    		(i + 1) / 2.0, 1.0, 1.0]);
 		boxVertices = boxVertices.concat([i + 0.05, 1.0, 1.0,    0.0,(i + 1.05) / 2.0, 1.0]);
@@ -123,6 +123,50 @@ var InitDemo = function () {
 		boxVertices = boxVertices.concat([1.0, 1.0, 1.0,    	0.5, 0.5, 0.5]);	
 		boxIndices = boxIndices.concat([j++ , j ++, j ++]);
 	}
+	*/
+	boxVertices = [
+		 // Front face
+    -1.0, -1.0,  1.0, 1.0,  1.0,  1.0,
+     1.0, -1.0,  1.0, 1.0,  1.0,  1.0,
+     1.0,  1.0,  1.0, 0.0,  0.0,  0.0,
+    -1.0,  1.0,  1.0,0.0,  0.0,  0.0,
+
+    // Back face
+    -1.0, -1.0, -1.0,0.0,  0.0,  0.0,
+    -1.0,  1.0, -1.0,0.0,  1.0,  0.0,
+     1.0,  1.0, -1.0,0.0,  0.0,  1.0,
+     1.0, -1.0, -1.0,0.0,  0.0,  0.0,
+
+    // Top face
+    -1.0,  1.0, -1.0,1.0,  1.0,  1.0,
+    -1.0,  -1.0,  1.0,1.0,  1.0,  1.0,
+     1.0,  -1.0,  1.0,1.0,  1.0,  1.0,
+     1.0,  1.0, -1.0,1.0,  1.0,  1.0,
+
+    // Bottom face
+    -1.0, -1.0, -1.0,1.0,  1.0,  1.0,
+     1.0, -1.0, -1.0,1.0,  1.0,  1.0,
+     1.0, -1.0,  1.0,1.0,  1.0,  1.0,
+    -1.0, -1.0,  1.0,1.0,  1.0,  1.0,
+
+    // Right face
+     1.0, -1.0, -1.0,1.0,  1.0,  1.0,
+     1.0,  1.0, -1.0,1.0,  1.0,  1.0,
+     1.0,  1.0,  1.0,1.0,  1.0,  1.0,
+     1.0, -1.0,  1.0,1.0,  1.0,  1.0,
+
+    // Left face
+    -1.0, -1.0, -1.0,1.0,  1.0,  1.0,
+    -1.0, -1.0,  1.0,1.0,  1.0,  1.0,
+    -1.0,  1.0,  1.0,1.0,  1.0,  1.0,
+    -1.0,  1.0, -1.0,1.0,  1.0,  1.0
+	];
+	boxIndices = [
+	4,  3,  2,      4 ,  2,  7,    // front
+
+	8,  9,  10,     8,  10, 11,   // top
+    
+	];
 /*
 	var boxIndices = [];
 	boxIndices = boxIndices.concat([0,1,2]);
@@ -202,7 +246,7 @@ var InitDemo = function () {
 	var viewMatrix = new Float32Array(16);
 	var projMatrix = new Float32Array(16);
 	mat4.identity(worldMatrix);
-	mat4.lookAt(viewMatrix, [0, 0, -3.5], [0, 0, 0], [0, 1, 0]);
+	mat4.lookAt(viewMatrix, [8, 5, -1], [0, 0, 0], [0, 1, 0]);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
