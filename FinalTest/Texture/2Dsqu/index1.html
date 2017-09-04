@@ -6,17 +6,18 @@
 <meta charset="utf-8" />
 <title>simple texture</title>
 <script id="shader-vs" type="x-shader/x-vertex">
+precision mediump float;
 attribute vec3 aPos;
 attribute vec3 aColor;
 attribute vec2 aVertexTextureCoord;
-varying highp vec2 vTextureCoord;
+varying vec2 vTextureCoord;
 uniform vec3 dim;
 
-varying highp float k;
+varying float k;
 float tk=0.5;
-attribute highp float aId;
-varying highp mat3 tri;
-varying highp vec3 vColor;
+attribute float aId;
+varying mat3 tri;
+varying vec3 vColor;
 int count = 1;
 
 void main(void){
@@ -36,16 +37,16 @@ void main(void){
 }
 </script>
 <script id="shader-fs" type="x-shader/x-fragment">
-precision highp float;
-varying highp vec2 vTextureCoord;
-varying highp vec3 vColor;
+precision mediump float;
+varying vec2 vTextureCoord;
+varying vec3 vColor;
 uniform sampler2D uSampler;
 
 uniform mat3 uTri;
 uniform mat3 uColor;
 uniform vec3 dim;
-varying highp float k;
-varying highp mat3 tri;
+varying float k;
+varying mat3 tri;
 
 void main(void) {
   
