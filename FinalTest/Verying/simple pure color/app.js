@@ -14,7 +14,7 @@ var vertexShaderText =
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'  gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
+'  //gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
 '}'
 ].join('\n');
 
@@ -196,13 +196,11 @@ for (var i = -1; i < 1 - k; i+= k){
 	boxVertices = boxVertices.concat([i,  1.0, -1.0, 1 /255 *5 * j,  0.0,  0.0]);
 	boxVertices = boxVertices.concat([i,  -1.0,  1.0,1 /255 *5 * j,  0.0,  0.0]);
 	boxVertices = boxVertices.concat([i + k,  -1.0,  1.0,1 /255 *5 * j,  0.0,  0.0]);	
-	//boxVertices = boxVertices.concat([i,  1.0, -1.0,  0.0, 1 /255 *5 * j, 0.0]);
-	//boxVertices = boxVertices.concat([i + k,  -1.0,  1.0,  0.0, 1 /255 *5 * j, 0.0]);	
-	//boxVertices = boxVertices.concat([i + k,  1.0, -1.0,  0.0, 1 /255 *5 * j, 0.0]);	
-	//boxIndices = boxIndices.concat([j, j + 1, j + 2, j+3 , j+4, j+5]);
-	//j += 6;
-	boxIndices = boxIndices.concat([j, j + 1, j + 2]);
-	j += 3;
+	boxVertices = boxVertices.concat([i,  1.0, -1.0,  0.0, 1 /255 *5 * j, 0.0]);
+	boxVertices = boxVertices.concat([i + k,  -1.0,  1.0,  0.0, 1 /255 *5 * j, 0.0]);	
+	boxVertices = boxVertices.concat([i + k,  1.0, -1.0,  0.0, 1 /255 *5 * j, 0.0]);	
+	boxIndices = boxIndices.concat([j, j + 1, j + 2, j+3 , j+4, j+5]);
+	j += 6;
 }
 
 
