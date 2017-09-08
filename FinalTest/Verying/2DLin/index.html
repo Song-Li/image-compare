@@ -24,9 +24,12 @@
             0.7,0.6,0 
          ]
 		 */
-		 var vertices = [];
-		for (var i = -1; i <= 1; i += 0.005)
-      vertices = vertices.concat([-1, -1, 0.0 ,1, i , 0.0]);
+		var vertices = [
+            10, 110,
+            20, 30,
+            30, 40,
+            40, 50,
+        ];
       /*
     vertices = [-1.0, -1.0, 0.0, 1.0 , -1.0, 0.0,1.0 , 1.0 , 0.0];*/
 		//for (var i = -1; i <= 0; i += 0.001)
@@ -49,11 +52,16 @@
 
          // Vertex shader source code
          var vertCode =
-            'attribute vec3 coordinates;' +
+            'attribute vec2 coordinates;' +
+			'uniform vec2 u_resolution;' +
+				
             'void main(void) {' +
-               ' gl_Position = vec4(coordinates, 1.0);' +
+			   '  vec2 zeroToOne = coordinates / u_resolution;' +
+			   ' vec2 zeroToTwo = zeroToOne * 2.0;' +
+			   ' vec2 clipSpace = zeroToTwo - 1.0;' +
+               ' gl_Position = vec4(clipSpace,0.0 , 1.0);' +
+               'gl_PointSize = 1.0;'+
             '}';
-
          // Create a vertex shader object
          var vertShader = gl.createShader(gl.VERTEX_SHADER);
 
@@ -101,9 +109,11 @@
 
          // Get the attribute location
          var coord = gl.getAttribLocation(shaderProgram, "coordinates");
+		 var resolutionUniformLocation = gl.getUniformLocation(shaderProgram, "u_resolution");
 
          // Point an attribute to the currently bound VBO
-         gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+         gl.vertexAttribPointer(coord, 2, gl.FLOAT, false, 0, 0);
+		 gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
 
          // Enable the attribute
          gl.enableVertexAttribArray(coord);
@@ -111,7 +121,7 @@
          /*============ Drawing the triangle =============*/
 
          // Clear the canvas
-         gl.clearColor(1.0, 0.0, 0.0, 0.9);
+         gl.clearColor(1.0, 0.0, 0.0, 1.0);
 
          // Enable the depth test
          gl.enable(gl.DEPTH_TEST);
@@ -123,7 +133,7 @@
          gl.viewport(0,0,canvas.width,canvas.height);
 
          // Draw the triangle
-         gl.drawArrays(gl.TRIANGLES, 0, 800);
+         gl.drawArrays(gl.TRIANGLES, 0, 3);
 
          // POINTS, LINE_STRIP, LINE_LOOP, LINES,
          // TRIANGLE_STRIP,TRIANGLE_FAN, TRIANGLES
