@@ -25,8 +25,10 @@
          ]
 		 */
 		 var vertices = [];
-		 for (var i = -1; i <= 1; i += 0.05)
-			vertices = vertices.concat([-1, -1, 0.0 ,1, i , 0.0]);
+		for (var i = -1; i <= 1; i += 0.005)
+      vertices = vertices.concat([-1, -1, 0.0 ,1, i , 0.0]);
+      /*
+    vertices = [-1.0, -1.0, 0.0, 1.0 , -1.0, 0.0,1.0 , 1.0 , 0.0];*/
 		//for (var i = -1; i <= 0; i += 0.001)
 		//	vertices = vertices.concat([-1, -1, i, 1]);
 			
@@ -121,7 +123,7 @@
          gl.viewport(0,0,canvas.width,canvas.height);
 
          // Draw the triangle
-         gl.drawArrays(gl.LINES, 0, 80);
+         gl.drawArrays(gl.TRIANGLES, 0, 800);
 
          // POINTS, LINE_STRIP, LINE_LOOP, LINES,
          // TRIANGLE_STRIP,TRIANGLE_FAN, TRIANGLES
