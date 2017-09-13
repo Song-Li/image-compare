@@ -14,7 +14,8 @@ var vertexShaderText =
 '{',
 '  fragColor = vertColor;',
 '  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'  gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
+'  //gl_Position = vec4(((2.0*floor(((gl_Position.xyz+1.0)*dim)/2.0))/dim-1.0), gl_Position.w);',
+'	gl_PointSize = 1.0;',
 '}'
 ].join('\n');
 
@@ -85,12 +86,17 @@ var InitDemo = function () {
 	//
 	// Create buffer
 	//
+	/*
 	var triangleVertices = 
 	[ // X, Y,       R, G, B
 		-1.0, 1.0, 0.0,    1.0, 1.0, 0.0,
-		-1.0, -1.0, 0.0, 0.7, 0.0, 1.0,
-		1.5, -1.0, 0.0,  0.1, 1.0, 0.6
-	];
+		-1.0, -1.0, 0.0, 1.0, 1.0, 0.0
+	];*/
+	var triangleVertices = [];
+	var i = 0;
+	for (i = 1.0; i > -1.0; i -= 0.1)
+		triangleVertices = triangleVertices.concat([-1.0, i, 0.0, 1.0, 1.0, 1.0]);
+	
 
 	var triangleVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
@@ -133,7 +139,7 @@ var InitDemo = function () {
 	var projMatrix = new Float32Array(16);
 	mat4.identity(worldMatrix);
 	// Look at function
-	mat4.lookAt(viewMatrix, [0, 10, 10], [0, 0, 0], [0, 1, 0]);      
+	mat4.lookAt(viewMatrix, [10, 10, 3], [0, 0, 0], [0, 1, 0]);      
 	mat4.perspective(projMatrix, glMatrix.toRadian(20), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
@@ -141,7 +147,7 @@ var InitDemo = function () {
 	gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 	
 	
-	gl.drawArrays(gl.TRIANGLES, 0, 3);
+	gl.drawArrays(gl.POINTS, 0, 4);
     var dataURL = canvas.toDataURL('image/png', 1.0);
     console.log(dataURL);
     tryTest(dataURL);
