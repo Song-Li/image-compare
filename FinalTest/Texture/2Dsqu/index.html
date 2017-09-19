@@ -47,13 +47,17 @@ uniform vec3 dim;
 varying highp float k;
 varying highp mat3 tri;
 
+float my_distance(vec2 p1, vec2 p2){
+  return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
+
 void main(void) {
   
 	//gl_FragColor = texture2D(uSampler, vTextureCoord);
 	//gl_FragColor = vec4(0.0,0.0,k, 1.0);
 
 	//gl_FragColor = vec4(tri[1],1.0);
-  float d0 = pow(distance(gl_FragCoord.xy, uTri[0].xy),1.);
+  /*float d0 = pow(distance(gl_FragCoord.xy, uTri[0].xy),1.);
   float d1 = pow(distance(gl_FragCoord.xy, uTri[1].xy),1.);
   float d2 = pow(distance(gl_FragCoord.xy, uTri[2].xy),1.);
   float f0 = (d0 + d1 + d2) / d0;
@@ -65,8 +69,45 @@ void main(void) {
   float r = w0 * uColor[0][0] + w1 * uColor[1][0] + w2 * uColor[2][0];
   float g = w0 * uColor[0][1] + w1 * uColor[1][1] + w2 * uColor[2][1];
   float b = w0 * uColor[0][2] + w1 * uColor[1][2] + w2 * uColor[2][2];
+  float r = (d0/dim.x) * uColor[0][0] + w1 * uColor[1][0] + w2 * uColor[2][0];
+  float g = (d1/dim.x) * uColor[0][1] + w1 * uColor[1][1] + w2 * uColor[2][1];
+  float b = (d2/dim.x) * uColor[0][2] + w1 * uColor[1][2] + w2 * uColor[2][2];
+  r = (d0 / dim.x) * 1.;
+  g = (d1 / dim.x) * 1.;
+  b = (d2 / dim.x) * 1.;*/
 
-  gl_FragColor = vec4(floor(vColor*255.) / 255.,1.0);
+  //float d0 = my_distance(gl_FragCoord.xy, uTri[0].xy);
+  //float d1 = my_distance(gl_FragCoord.xy, uTri[1].xy);
+  //float d2 = my_distance(gl_FragCoord.xy, uTri[2].xy);
+  float d0 = (uTri[0].x - gl_FragCoord.x) * (uTri[0].x - gl_FragCoord.x) + (uTri[0].y - gl_FragCoord.y) * (uTri[0].y - gl_FragCoord.y);
+  float d1 = (uTri[1].x - gl_FragCoord.x) * (uTri[1].x - gl_FragCoord.x) + (uTri[1].y - gl_FragCoord.y) * (uTri[1].y - gl_FragCoord.y);
+  float d2 = (uTri[2].x - gl_FragCoord.x) * (uTri[2].x - gl_FragCoord.x) + (uTri[2].y - gl_FragCoord.y) * (uTri[2].y - gl_FragCoord.y);
+  float w0 = (d0) / (d0 + d1 + d2);
+  float w1 = (d1) / (d0 + d1 + d2);
+  float w2 = (d2) / (d0 + d1 + d2);
+  w0 = floor(w0 * 10.) / 10.;
+  w1 = floor(w1 * 10.) / 10.;
+  w2 = 1. - w0 - w1;
+  
+  //float w0 = d0 / (d0 + d1 + d2);
+  //float w1 = d1 / (d0 + d1 + d2);
+  //float w2 = d2 / (d0 + d1 + d2);
+  //float r = (gl_FragCoord.x / dim.x) * uColor[0][0] + (1. - (gl_FragCoord.x / dim.x)) * uColor[1][1];
+  mat3 tColor;
+  tColor[0] = floor(uColor[0] * 10.) / 10.;
+  tColor[1] = floor(uColor[1] * 10.) / 10.;
+  tColor[2] = floor(uColor[2] * 10.) / 10.;
+  float r = w0 * uColor[0][0] + w1 * uColor[1][0] + w2 * uColor[2][0];
+  float g = w0 * uColor[0][1] + w1 * uColor[1][1] + w2 * uColor[2][1];
+  float b = w0 * uColor[0][2] + w1 * uColor[1][2] + w2 * uColor[2][2];
+
+  float r1 = floor(d0 * uColor[0][0] + d1 * uColor[1][0] + d2 * uColor[2][0]);
+  float g1 = floor(d0 * uColor[0][1] + d1 * uColor[1][1] + d2 * uColor[2][1]);
+  float b1 = floor(d0 * uColor[0][2] + d1 * uColor[1][2] + d2 * uColor[2][2]);
+
+  //gl_FragColor = vec4(floor(vec3(r,g,b)*255.) / 255.,1.0);
+  gl_FragColor = vec4(floor((vec3(r1,g1,b1) / (d0 + d1))*255.) / 255.,1.0);
+  //gl_FragColor = vec4(floor(vColor * 255.) / 255., 1.);
   //gl_FragColor = vec4(r, g, b, 1.0);
 	
 }
@@ -177,11 +218,21 @@ var vertex = [
 ];*/
 
 var color = [
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0
+  0.1, 0.45, 0.63,
+  0.45, 1.0, 0.8,
+  0.84, 0.67, 0.3
 ];
-
+color = [
+  0.1, 0.25, 0.4,
+  0.45, 1.0, 1.0,
+  0.84, 0.75, 0.6
+];
+/*
+var color = [
+  1.0, 0.5, 0.5,
+  0.5, 1.0, 0.5,
+  0.5, 0.5, 1.0
+];*/
 /*
 var vertex = [
     -0.07, -1.0, 0.0,
