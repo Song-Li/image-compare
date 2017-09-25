@@ -280,8 +280,8 @@
 					y2 = returnValue[1];
 				}			
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(i);
-					__PointBuffer = __PointBuffer.concat(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1));
+					__PointBuffer = __PointBuffer.concat(i + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)) + 0.5 );
 					// 这个公式在之后还要进行变换
 				}	
 			}
@@ -307,8 +307,8 @@
 				for (var i = y1; i <= y2; i++){
 					//console.log("x2 - x1", x2 - x1);
 					//console.log("y2 - y1 + 1",y2 - y1 + 1);
-					__PointBuffer = __PointBuffer.concat(x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1));
-					__PointBuffer = __PointBuffer.concat(i);
+					__PointBuffer = __PointBuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1))+ 0.5 );
+					__PointBuffer = __PointBuffer.concat(i + 0.5);
 				}	
 			}
 			return __PointBuffer;
