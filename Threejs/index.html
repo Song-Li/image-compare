@@ -11,33 +11,73 @@
 	<body>
 		<script src="three.js"></script>
 		<script>
-        var scene = new THREE.Scene();
+			var __myPointsMaterial;
+			var __myPointsGeometry;
+			var __myisPoints;
+			var __myisPointsMaterial;
+			var __myPointsLights;
+			var __myPointsMap;
+			var __myPointssizeAttenuation;
+			var __myPoints;
+			var __myPointsSize;
+			var __myPointsColor;
+			var __myPointsVertices;
 
-        var camera = new THREE.PerspectiveCamera(45,1,1,1000);
-        camera.position.set(0,0,100);
-        camera.lookAt(new THREE.Vector3(0,0,0)); 
+	        var scene = new THREE.Scene();
 
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth,window.innerHeight);
+	        var camera = new THREE.PerspectiveCamera(45,1,1,1000);
+	        camera.position.set(0,0,100);
+	        camera.lookAt(new THREE.Vector3(0,0,0)); 
 
-
-
-        document.body.appendChild(renderer.domElement);       
+	        var renderer = new THREE.WebGLRenderer();
+	        renderer.setSize(window.innerWidth,window.innerHeight);
 
 
-        var material = new THREE.PointsMaterial({color:0xDC143C});
-        // var material_Lines = new THREE.LineMaterial({color:0x0000ff});
-        var geometry = new THREE.Geometry();
 
-        geometry.vertices.push(new THREE.Vector3(-10,0,0));
-        geometry.vertices.push(new THREE.Vector3(0,10,0));
-        geometry.vertices.push(new THREE.Vector3(0,5,0));
+	        document.body.appendChild(renderer.domElement);       
+			// *************************************************************
+	        THREE.my_PointsMaterial = THREE.PointsMaterial;
+	        THREE.PointsMaterial = function(color, isPointsMaterial, lights, map, size, sizeAttenuation)
+	        {
+	        	__myPointsColor = color;
+	        	__myPointsisPointsMaterial = isPointsMaterial;
+	        	__myPointsLights = lights;
+	        	__myPointsMap = map;
+	        	__myPointsSize = size;
+	        	__myPointssizeAttenuation = sizeAttenuation
+	        	THREE.my_PointsMaterial(__myPointsColor,__myisPointsMaterial, __myPointsLights, __myPointsMap, __myPointsSize, __myPointssizeAttenuation);
+	        }
+	        // *************************************************************
+	        THREE.my_PointsGeometry = THREE.Geometry;
+	        THREE.Geometry = function(vertices)
+	        {
+	        	__myPointsVertices = vertices;
+	        	THREE.my_PointsGeometry(__myPointsVertices);
+	        }
+			// *************************************************************
+			THREE.my_Points = THREE.Points;
+			THREE.Points = function(geometry, isPoints, material)
+			{
+				__myPointsGeometry = geometry;
+				__myisPoints = isPoints;
+				__myPointsMaterial = material;
+			}
 
-        var points = new THREE.Points(geometry,material);
-        // var line = THREE.Line(geometry,material_Lines);
-        scene.add(points);                  
-        // scene.add(line);  
-        renderer.render(scene,camera);  
+
+	        var material = new THREE.my_PointsMaterial({color:0xDC143C});
+	        // var material_Lines = new THREE.LineMaterial({color:0x0000ff});
+
+	        var geometry = new THREE.my_PointsGeometry();
+
+	        geometry.vertices.push(new THREE.Vector3(-10,0,0));
+	        geometry.vertices.push(new THREE.Vector3(0,10,0));
+	        geometry.vertices.push(new THREE.Vector3(0,5,0));
+
+	        var points = new THREE.my_Points(geometry,material);
+	        // var line = THREE.Line(geometry,material_Lines);
+	        scene.add(points);                  
+	        // scene.add(line);  
+	        renderer.render(scene,camera);  
 
 		</script>
 	</body>
