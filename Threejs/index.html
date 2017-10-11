@@ -5,7 +5,7 @@
 		<!-- <title>My first three.js app</title> -->
 		<style>
 			body { margin: 0; }
-			canvas { width: 30%; height: 30% }
+			canvas { width: 100%; height: 100% }
 		</style>
 	</head>
 	<body>
@@ -45,152 +45,14 @@
 
 	        document.body.appendChild(renderer.domElement);       
 			// *************************************************************
-	        THREE.my_PointsMaterial = THREE.PointsMaterial;
-	        THREE.PointsMaterial = function(color, isPointsMaterial, lights, map, size, sizeAttenuation)
-	        {
-	        	__myPointsColor = color;
-	        	__myPointsisPointsMaterial = isPointsMaterial;
-	        	__myPointsLights = lights;
-	        	__myPointsMap = map;
-	        	__myPointsSize = size;
-	        	__myPointssizeAttenuation = sizeAttenuation
-	        	THREE.my_PointsMaterial(__myPointsColor,__myisPointsMaterial, __myPointsLights, __myPointsMap, __myPointsSize, __myPointssizeAttenuation);
-	        }
-	        // *************************************************************
-	        // THREE.my_PointsGeometry = THREE.Geometry;
-	        // THREE.Geometry = function(vertices)
-	        // {
-	        // 	__myPointsVertices = vertices;
-	        // 	THREE.my_PointsGeometry(__myPointsVertices);
-	        // }
-			// *************************************************************
-			THREE.my_Points = THREE.Points;
-			THREE.Points = function(geometry, isPoints, material)
-			{
-				__myPointsGeometry = geometry;
-				__myisPoints = isPoints;
-				__myPointsMaterial = material;
-			}
+			var geometry = new THREE.Geometry();      
+			geometry.vertices.push( new THREE.Vector3(10,10,10) );
+			var size = 1; // 1px
 
-			var geometry = new THREE.BufferGeometry();
-
-			var vertexPositions = [[ 0, 0, 0],
-									[20, 10, 0 ]];  
-			// vertexPositions.concat();
-			// console.log(vertexPositions);
- 			// ***************************************************************************
-           function mergeArrays(arr1, arr2) {
-			    var merger = {};
-
-			    for (var i = 0; i < arr1.length; i++) {
-			        merger[arr1[i][2]] = [arr1[i][0], arr1[i][1], arr1[i][2]];
-			    }
-
-			    for (var i = 0; i < arr2.length; i++) {
-			        if (!(arr2[i][2] in merger)) {
-			            merger[arr2[i][2]] = [arr2[i][0], arr2[i][1], arr2[i][2]];
-			        }
-			    }
-
-			    var output = [];
-			    for (var key in merger) {
-			        output.push(merger[key]);
-			    }
-			    return output;
-			}
-
-           var step;
-           var start = vertexPositions[0];
-           console.log(start);
-           var num_points;
-           var dis_x = Math.abs(vertexPositions[0][0] - vertexPositions[1][0]);
-           var dis_y = Math.abs(vertexPositions[0][1] - vertexPositions[1][1]);
-           var p = 0;
-           var res = [];
-           if (dis_x < dis_y)
-           {
-           		step = Math.ceil(dis_y/dis_x);
-           		num_points = (dis_y - 1)*20;
-
-           		for(var i = 0; i < num_points; i++)
-           		{
-           			for(var j =1; j <= step; j++)
-           			{
-           				start[1] = start[1] + 0.05;
-           				p = p + 0.05;
-           				if (p <= num_points)
-           				{
-           					// console.log(start);
-           					// res = mergeArrays(res, start);
-           					// poi = mergeArrays(poi, start);
-           					__poi = __poi.concat(start[0],start[1],0);
-           					// vertexPositions.concat(start);
-
-           				}
-           				
-           			}
-           			start[0] = start[0] + 0.05;
-           		}
-           }
-           else
-           {
-           		step = Math.ceil(dis_x/dis_y);
-           		num_points = (dis_x - 1)*20;
-
-           		for(var i = 0; i < num_points; i++)
-           		{
-           			for(var j =1; j <= step; j++)
-           			{
-           				start[0] = start[0] + 0.05;
-           				p = p + 0.05;
-           				if (p <= num_points)
-           				{
-           					// console.log(start);
-           					// res = mergeArrays(res, start);
-           					// poi = mergeArrays(poi, start);
-           					__poi = __poi.concat(start[0],start[1],0);
-           					// vertexPositions.concat(start);
-
-           				}
-           				
-           			}
-           			start[1] = start[1] + 0.05;
-           		}
-           }
-
-           // console.log(step);
-           // console.log(num_points);
-			   // console.log(__poi);
- 
-
-
-
-// ******************************************************************************
-			
- 			var vertices = new Float32Array( (vertexPositions.length * 3 + __poi.length));  
-            for ( var i = 0; i < vertexPositions.length; i++ ) {  
-                vertices[ i*3 + 0 ] = vertexPositions[i][0];  
-                vertices[ i*3 + 1 ] = vertexPositions[i][1];  
-                vertices[ i*3 + 2 ] = vertexPositions[i][2];  
-            }  
-
-
-            for( var i = 0; i < __poi.length; i++)
-            {
-            	vertices[(vertexPositions.length-1)*3+3+i] = __poi[i];
-            }
-
-            // itemSize = 3 because there are 3 values (components) per vertex  
- 
-            geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );  
-            // console.log(new THREE.BufferAttribute( vertices, 3 ));
-            var material = new THREE.my_PointsMaterial( { color: 0xff0000, sizeAttenuation: false } );  
-            var points = new THREE.my_Points( geometry, material ); 
-	        scene.add(points);                  
-	        // scene.add(line);  
-	        renderer.render(scene,camera);  
-
-
+			var sectorIcon = new THREE.PointCloud( geometry, new THREE.PointCloudMaterial( { size: size, color: new THREE.Color(0xff0000)} ) );
+		    scene.add(sectorIcon);                  
+		       // scene.add(line);  
+		    renderer.render(scene,camera);  
 
 		</script>
 	</body>
