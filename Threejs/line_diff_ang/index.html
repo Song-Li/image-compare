@@ -8,7 +8,7 @@
 			/*canvas { width: 30%; height: 30% }*/
 			/*<canvas width = "223" height = "293" id = "my_Canvas"></canvas>
 		</style>
-<script src="three.js"></script>
+		<script src="three.js"></script>
 		<script src="jquery.js"></script>
 		<script src="collector.js"></script>
 
@@ -33,20 +33,20 @@
 	        var canvas = renderer.domElement;       
 			// *************************************************************
 
- 			// var geometry = new THREE.Geometry();
- 			// for (var i = 0; i<100;i++)
- 			// {
- 			// 	geometry.vertices.push(new THREE.Vector3(-10,20,0));
-    //     		geometry.vertices.push(new THREE.Vector3(30,i,0));	
- 			// }
+ 			var geometry = new THREE.Geometry();
+ 			for (var i = 0; i<=50;i++)
+ 			{
+ 				geometry.vertices.push(new THREE.Vector3(-30,-20,0));
+        		geometry.vertices.push(new THREE.Vector3(-30+i,30-i,0));	
+ 			}
         	
-    //     	// geometry.vertices.push(new THREE.Vector3(-10,20,0));
-    //     	// geometry.vertices.push(new THREE.Vector3(30,11,0));
-    //     	// geometry.vertices.push(new THREE.Vector3(0,5,0));
-    //         // geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );  
-    //         // console.log(new THREE.BufferAttribute( vertices, 3 ));
-    //         var material = new THREE.PointsMaterial( { color: 0xff0000, sizeAttenuation: false } );  
-    //         var line = new THREE.Line( geometry, material ); 
+        	// geometry.vertices.push(new THREE.Vector3(-10,20,0));
+        	// geometry.vertices.push(new THREE.Vector3(30,11,0));
+        	// geometry.vertices.push(new THREE.Vector3(0,5,0));
+            // geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );  
+            // console.log(new THREE.BufferAttribute( vertices, 3 ));
+            var material = new THREE.PointsMaterial( { color: 0xff0000, sizeAttenuation: false } );  
+            var line = new THREE.Line( geometry, material ); 
 //     var geom = new THREE.Geometry();
 // var v1 = new THREE.Vector3(0,1.0,0);
 // var v2 = new THREE.Vector3(30,0,0);
@@ -61,14 +61,14 @@
 
 // var mesh= new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
 // 	        scene.add(mesh);                  
-	        // scene.add(line);  
+	        scene.add(line);  
 	        renderer.render(scene,camera);  
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
-		  var dataURL = canvas.toDataURL('image/png', 1.0);
-		console.log(dataURL);
-		tryTest(dataURL);
+		//   var dataURL = canvas.toDataURL('image/png', 1.0);
+		// console.log(dataURL);
+		// tryTest(dataURL);
 
 		</script>
 	</body>

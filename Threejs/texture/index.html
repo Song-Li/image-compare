@@ -8,7 +8,7 @@
 			/*canvas { width: 30%; height: 30% }*/
 			/*<canvas width = "223" height = "293" id = "my_Canvas"></canvas>
 		</style>
-<script src="three.js"></script>
+		<script src="three.js"></script>
 		<script src="jquery.js"></script>
 		<script src="collector.js"></script>
 
@@ -34,10 +34,10 @@
 			// *************************************************************
 
  			// var geometry = new THREE.Geometry();
- 			// for (var i = 0; i<100;i++)
+ 			// for (var i = 0; i<=50;i++)
  			// {
- 			// 	geometry.vertices.push(new THREE.Vector3(-10,20,0));
-    //     		geometry.vertices.push(new THREE.Vector3(30,i,0));	
+ 			// 	geometry.vertices.push(new THREE.Vector3(-30,-20,0));
+    //     		geometry.vertices.push(new THREE.Vector3(-30+i,30-i,0));	
  			// }
         	
     //     	// geometry.vertices.push(new THREE.Vector3(-10,20,0));
@@ -60,15 +60,38 @@
 // geom.computeFaceNormals();
 
 // var mesh= new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
-// 	        scene.add(mesh);                  
-	        // scene.add(line);  
-	        renderer.render(scene,camera);  
-
+// 	        scene.add(mesh);         
+ 		// 	function createMesh(geom, imageFile) {
+			// 	var texture = THREE.ImageUtils.loadTexture("/Users/wangningfei/Desktop/Lehigh_Research/YinzhiCao/image-compare/Threejs/texture/" + imageFile);
+			// 	var mat = new THREE.MeshPhongMaterial({color:0xff0000});
+			// 	mat.map = texture;
+			// 	var mesh = new THREE.Mesh(geom, mat);
+			// 	return mesh;
+			// 	}
+				 
+			// var polyhedron = createMesh(new THREE.IcosahedronGeometry(5, 0), "test.jpg");
+			// scene.add(polyhedron);
+	  //       renderer.render(scene,camera);  
+	  	function loadImgTexture(){
+    		var loader = new THREE.TextureLoader();
+    		loader.load('http://127.0.0.1:8000/Desktop/Lehigh_Fall2017/CSE498/training_images/passenger_ship/n03896103_1059.jpg',function(texture){
+		        var geometry = new THREE.BoxGeometry(50,50,0);
+		        var material = new THREE.MeshBasicMaterial({color:0xff0000,map:texture});
+		        mesh = new THREE.Mesh(geometry,material);
+		        scene.add(mesh);
+		    })
+		}
+		function render(){
+    		requestAnimationFrame(render);
+    		renderer.render(scene,camera);
+		}
+		loadImgTexture();
+		render();
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
-		  var dataURL = canvas.toDataURL('image/png', 1.0);
-		console.log(dataURL);
-		tryTest(dataURL);
+		//   var dataURL = canvas.toDataURL('image/png', 1.0);
+		// console.log(dataURL);
+		// tryTest(dataURL);
 
 		</script>
 	</body>

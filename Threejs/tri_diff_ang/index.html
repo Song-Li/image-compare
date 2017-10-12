@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<!-- <title>My first three.js app</title> -->
+		<style>
+			body { margin: 0; }
+			/*canvas { width: 30%; height: 30% }*/
+			/*<canvas width = "223" height = "293" id = "my_Canvas"></canvas>
+		</style>
+		<script src="three.js"></script>
+		<script src="jquery.js"></script>
+		<script src="collector.js"></script>
+
+	</head>
+	<body>
+
+		<canvas width = "223" height = "293" id = "my_Canvas"></canvas>
+				<script>
+
+	        var scene = new THREE.Scene();
+
+	        var camera = new THREE.PerspectiveCamera(45,1,1,1000);
+	        camera.position.set(0,0,100);
+	        camera.lookAt(new THREE.Vector3(0,0,0)); 
+
+	        var renderer = new THREE.WebGLRenderer();
+	        renderer.setSize(223,293);
+
+
+
+	        document.body.appendChild(renderer.domElement);
+	        var canvas = renderer.domElement;       
+			// *************************************************************
+
+ 			// var geometry = new THREE.Geometry();
+ 			// for (var i = 0; i<=50;i++)
+ 			// {
+ 			// 	geometry.vertices.push(new THREE.Vector3(-30,-20,0));
+    //     		geometry.vertices.push(new THREE.Vector3(-30+i,30-i,0));	
+ 			// }
+        	
+        	// geometry.vertices.push(new THREE.Vector3(-10,20,0));
+        	// geometry.vertices.push(new THREE.Vector3(30,11,0));
+        	// geometry.vertices.push(new THREE.Vector3(0,5,0));
+            // geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );  
+            // console.log(new THREE.BufferAttribute( vertices, 3 ));
+//             var material = new THREE.PointsMaterial( { color: 0xff0000, sizeAttenuation: false } );  
+//             var line = new THREE.Line( geometry, material ); 
+			for(i = 0; i < 60; i+=3)
+			{ 
+				var str = "geom" + i.toString();
+	    		var str = new THREE.Geometry();
+				var v1 = new THREE.Vector3(-40+i,-10,0);
+				var v2 = new THREE.Vector3(-37+i,-10,0);
+				var v3 = new THREE.Vector3(-40+i,10,0);
+				
+				str.vertices.push(v1);
+				str.vertices.push(v2);
+				str.vertices.push(v3);
+				
+				// geom.colors.push(new THREE.Color(0xFF0000));
+	  	// 		geom.colors.push(new THREE.Color(0xFF0000));
+	  	// 		geom.colors.push(new THREE.Color(0xFF0000)); 
+
+				str.faces.push( new THREE.Face3( 0, 1, 2 ) );
+				// geom.faces.push( new THREE.Face3( 1, 2, 3 ) );
+				// geom.computeFaceNormals();
+				var mat = new THREE.MeshBasicMaterial( {color: 0xf00000 + i*10000} );
+
+				var mesh= new THREE.Mesh( str, mat);
+		        scene.add(mesh);
+		    }  
+
+		    for(i = 60; i <= 119; i+=3)
+			{ 
+				var str = "geom" + i.toString();
+	    		var str = new THREE.Geometry();
+				var v1 = new THREE.Vector3(-37+i-60,-10,0);
+				var v2 = new THREE.Vector3(-37+i-60,10,0);
+				var v3 = new THREE.Vector3(-40+i-60,10,0);
+				
+				str.vertices.push(v1);
+				str.vertices.push(v2);
+				str.vertices.push(v3);
+				
+				// geom.colors.push(new THREE.Color(0xFF0000));
+	  	// 		geom.colors.push(new THREE.Color(0xFF0000));
+	  	// 		geom.colors.push(new THREE.Color(0xFF0000)); 
+
+				str.faces.push( new THREE.Face3( 0, 1, 2 ) );
+				// geom.faces.push( new THREE.Face3( 1, 2, 3 ) );
+				// geom.computeFaceNormals();
+				var mat = new THREE.MeshBasicMaterial( {color: 0x0f0000 + i*20000} );
+
+				var mesh= new THREE.Mesh( str, mat);
+		        scene.add(mesh);
+		    }                 
+	        // scene.add(line); 
+	  //       var geom1 = new THREE.Geometry(); 
+	  //       var v4 = new THREE.Vector3(-1,-1,0);
+			// var v5 = new THREE.Vector3(-20,0,0);
+			// var v6 = new THREE.Vector3(0,-30,0);
+			// geom1.vertices.push(v4);
+			// geom1.vertices.push(v5);
+			// geom1.vertices.push(v6);
+			// geom1.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			// var mat1 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+			// var mesh1= new THREE.Mesh( geom1, mat1);
+	  //       scene.add(mesh1);
+
+
+	        renderer.render(scene,camera);  
+
+/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+
+		//   var dataURL = canvas.toDataURL('image/png', 1.0);
+		// console.log(dataURL);
+		// tryTest(dataURL);
+
+		</script>
+	</body>
+</html>
