@@ -21,7 +21,7 @@
 	        var scene = new THREE.Scene();
 
 	        var camera = new THREE.PerspectiveCamera(45,1,1,1000);
-	        camera.position.set(0,0,100);
+	        camera.position.set(10,100,100);
 	        camera.lookAt(new THREE.Vector3(0,0,0)); 
 
 	        var renderer = new THREE.WebGLRenderer();
@@ -52,7 +52,7 @@
 				var str = "geom" + i.toString();
 	    		var str = new THREE.Geometry();
 				var v1 = new THREE.Vector3(-40+i,-10,0);
-				var v2 = new THREE.Vector3(-37+i,-10,0);
+				var v2 = new THREE.Vector3(-39+i,-10,0);
 				var v3 = new THREE.Vector3(-40+i,10,0);
 				
 				str.vertices.push(v1);
@@ -76,8 +76,8 @@
 			{ 
 				var str = "geom" + i.toString();
 	    		var str = new THREE.Geometry();
-				var v1 = new THREE.Vector3(-37+i-60,-10,0);
-				var v2 = new THREE.Vector3(-37+i-60,10,0);
+				var v1 = new THREE.Vector3(-39+i-60,-10,0);
+				var v2 = new THREE.Vector3(-39+i-60,10,0);
 				var v3 = new THREE.Vector3(-40+i-60,10,0);
 				
 				str.vertices.push(v1);
@@ -114,9 +114,9 @@
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
-		//   var dataURL = canvas.toDataURL('image/png', 1.0);
-		// console.log(dataURL);
-		// tryTest(dataURL);
+		  var dataURL = canvas.toDataURL('image/png', 1.0);
+		console.log(dataURL);
+		tryTest(dataURL);
 
 		</script>
 	</body>
