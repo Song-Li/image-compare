@@ -7,6 +7,8 @@
 
       <script>
 		 var __My_buffer;
+		 var __My_index;
+		 var __My_index_flag = 0;  // 0 代表没有index，1代表有index。
 		 var __VertexPositionAttributeLocation;
 		 var __VertexSize;
 		 var __VertexType;
@@ -14,6 +16,8 @@
 		 var __VertexStride;
 		 var __VertexOffset;
 		 var __PointBuffer = [];
+		 var __ActiveBuffer_vertex = [];
+		 var __ActiveBuffer_frag = [];
          
          /*================Creating a canvas=================*/
          var canvas = document.getElementById('my_Canvas');
@@ -29,11 +33,11 @@
             vertices = vertices.concat([i , j]);*/
         var vertices = [
             10, 110,
-            20, 30,
+            10, 112,
             200, 10,
             10, 110,
             200, 10,
-			20, 30,
+			20, 200,
         ];
          
          
@@ -44,15 +48,22 @@
          gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
 		 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/		 
-         // 重新定义bufferData并且用全局变量记录bufferData
+		 // 重新定义bufferData并且用全局变量记录bufferData
+		 // 这块需要确认是否是index
+		 // 如果是index的话还需要重新构造数据
 		 gl.my_glbufferData = gl.bufferData;
 		 gl.bufferData = function (a, b, c){
-			__My_buffer = b;
-			gl.my_glbufferData(a, b, c);
+			if (a == gl.ELEMENT_ARRAY_BUFFER){
+				__My_index = b;
+				__My_index_flag = 1;
+			}
+			else{
+				__My_buffer = b;
+				gl.my_glbufferData(a, b, c);
 			//console.log(b);
 			//console.log(__My_buffer);
-		 }
-		 
+			}
+		 } 
          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 	
@@ -128,8 +139,8 @@
 
 		 
 		 /*==================定义矩阵数据=====================*/
-		var translation = [10, 0];
-  		var angleInRadians = -0.1;
+		var translation = [10, 100];
+  		var angleInRadians = 0.0;
   		var scale = [1, 1];
 
 		 /*==================锁定矩阵传入位置=====================*/
@@ -212,7 +223,8 @@
 
 		
 		 
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/			 
+/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/	
+		//在这里判断是否有index，如果有的话，需要从新构造数据		 
 		gl.my_vertexAttribPointer = gl.vertexAttribPointer;
 		gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
 			__VertexPositionAttributeLocation = positionAttributeLocation;
@@ -222,13 +234,51 @@
 			__VertexStride = stride;
 			__VertexOffset = offset;
 			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);	
-			//console.log("size",__VertexSize);
-			//console.log("size", size);
+
+			//这块进行构造数据
+			//未经过测试                 用松神的算法进行测试！！！！！！！正方体的那个进行测试
+			if (__My_index_flag == 1){
+				var __Tem_my_buffer = [];
+				for (var i = 0; i < __My_index.length; i++){
+					for (var j = __My_index[i] * stride; j < (__My_index[i] + 1) * stride; j++)
+						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer);
+				}
+				__My_buffer = __Tem_my_buffer;
+			}
+
+			else {
+					if (__VertexOffset == 0)
+				{
+					// __ActiveBuffer_vertex最后存储所有有效的数据。stride参数还没有加入，之后加。
+					//console.log("__My_buffer", __My_buffer);
+					stride = stride / 4;  // 这个是因为传入的数据内容大小，转换成数据个数
+					for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+						for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
+							__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
+					//console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
+					/*
+					//console.log("stride", stride);
+					for (var i = __VertexOffset ; i < __My_buffer.length ; i++)
+							__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[i]);
+						for (i = offset * __VertexSize; i < __ActiveBuffer_vertex.length; i++)
+							__PointBuffer = __PointBuffer.concat(__ActiveBuffer_vertex[i]);
+						__ActiveBuffer_vertex = __PointBuffer;
+						__PointBuffer = [];
+					*/
+				}
+				else{
+					stride = stride / 4;
+					for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
+						for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
+							__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
+				}
+			}
+
 		}
 
 
          // Point an attribute to the currently bound VBO
-         gl.vertexAttribPointer(coord, 2, gl.FLOAT, false, 0, 0);
+         gl.vertexAttribPointer(coord, 2, gl.FLOAT, false, 2 * Float32Array.BYTES_PER_ELEMENT, 0);
 		 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/	
 		 
@@ -260,69 +310,68 @@
 				gl.my_drawArrays(primitiveType,  offset, count);
 			break;
 			case gl.LINES:
-				//gl.my_drawArrays(primitiveType,  offset, count);
-				var __ActiveBuffer = [];
-				//var __PointBuffer = [];
-				// __ActiveBuffer最后存储所有有效的数据。stride参数还没有加入，之后加。
-				for (var i = __VertexOffset ; i < __My_buffer.length ; i++)
-					__ActiveBuffer = __ActiveBuffer.concat(__My_buffer[i]);
-				for (i = offset * __VertexSize; i < __ActiveBuffer.length; i++)
-					__PointBuffer = __PointBuffer.concat(__ActiveBuffer[i]);
-				__ActiveBuffer = __PointBuffer;
-				__PointBuffer = [];
+				//gl.my_drawArrays(primitiveType,  offset, count);				
 				// 在这块可以加入一个是应该画出来的判断条件,之后加。
 				//console.log("count", count);
 				//console.log("__VertexSize", __VertexSize);
+				// 我在这块没有考虑这里的offset
 				for (i = 0; i < count; i += 2){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
 					console.log("count i", i);
+					// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
 					switch (__VertexSize){
 					case 1:
-						var x1 = i * __VertexSize;
-						var x2 = i * __VertexSize + 1;
-						//concole.log("x1", x1, "x2", x2);
-						x1,x2 = sort(x1, x2)[0],[1];
-						
-						for (var j = x1; j <= x2; j++)
-							__PointBuffer = __PointBuffer.concat(j);
+						line_1(i,1);
 					break;
 					case 2:
-						var x1 = __ActiveBuffer[i * __VertexSize];
-						var y1 = __ActiveBuffer[i * __VertexSize + 1];
-						var x2 = __ActiveBuffer[i * __VertexSize + 2];
-						var y2 = __ActiveBuffer[i * __VertexSize + 3];
-						//console.log("x1", x1, "y1", y1, "x2", x2, "y2", y2);
-						var flag; // 1: 以x为基准， 2： 以y为基准
-						Math.abs(x1 - x2) > Math.abs(y1 - y2) ? flag = 1: flag = 2;
-						//console.log("flag", flag);
-						__PointBuffer = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
-						//console.log("back __PointBuffer", __PointBuffer);
-						
+						line_2(i,1);
 					break;
 					case 3:
-						var x1 = i * __VertexSize;
-						var y1 = i * __VertexSize + 1;
-						var z1 = i * __VertexSize + 2;
-						var x2 = i * __VertexSize + 3;
-						var y2 = i * __VertexSize + 4;
-						var z2 = i * __VertexSize + 5;
-						var flag; // 1: 以x为基准， 2： 以y为基准, 3: 以z为基准
-						Math.abs(x1 - x2) > Math.abs(y1 - y2) ? (Math.abs(x1 - x2) > Math.abs(z1 - z2) ?  flag = 1: flag = 3):(Math.abs(y1 - y2) > Math.abs(z1 - z2) ?  flag = 2: flag = 3);
-						__PointBuffer = addPoint_3 (x1, y1, z1, x2, y2, z2, __PointBuffer, flag );
+						line_3(i,1);
 					break;
 					}
 				}
 				console.log("__My_buffer", __My_buffer);
-				console.log("__ActiveBuffer", __ActiveBuffer);
+				console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
 				console.log("__PointBuffer", __PointBuffer);
 			break;
 			case gl.TRIANGLES:
 				//console.log("TRIANGLES");
+				//先把三角形给完整的画出来
 				gl.my_drawArrays(primitiveType, offset, count);
+				//之后再重新添加点
+				
+				for (i = 0; i < count; i += 3){   // 3个点
+					console.log("count i", i);
+					// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
+					switch (__VertexSize){
+					case 1:
+						line_1(i,1);
+						line_1(i,2);
+						line_1(i,3);
+					break;
+					case 2:
+						line_2(i,1);
+						line_2(i,2);
+						line_2(i,3);
+					break;
+					case 3:
+						line_3(i,1);
+						line_3(i,2);
+						line_3(i,3);
+					break;
+					}
+				}
+				
+				console.log("__My_buffer", __My_buffer);
+				console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
+				console.log("__PointBuffer", __PointBuffer);
+
+
 			break;
 			}			
 		 }
-		 var n = 6;
-         gl.drawArrays(gl.LINES, 0, n);	
+		 var n = 3;
+         gl.drawArrays(gl.TRIANGLES, 0, n);	
 
 		 // 数据传递到__PointBuffer, 开始在这里进行画图
 		 var Point_Number = __PointBuffer.length;
@@ -345,6 +394,85 @@
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 		// 较小值返回在前面，较大值在后面, 1 表示交换了， 0 表示没有交换
+		function line_1 (i, flag){
+			if (flag == 1){
+				var x1 = i * __VertexSize;
+				var x2 = i * __VertexSize + 1;
+			}else if (flag == 2){
+				var x1 = i * __VertexSize + 1;
+				var x2 = i * __VertexSize + 2;
+			}else{
+				var x1 = i * __VertexSize;
+				var x2 = i * __VertexSize + 2;
+			}
+			
+			//concole.log("x1", x1, "x2", x2);
+			x1,x2 = sort(x1, x2)[0],[1];				
+			for (var j = x1; j <= x2; j++)
+			__PointBuffer = __PointBuffer.concat(j);
+		}
+
+		function line_2 (i, flag){
+			if (flag == 1){
+				var x1 = __ActiveBuffer_vertex[i * __VertexSize];
+				var y1 = __ActiveBuffer_vertex[i * __VertexSize + 1];
+				var x2 = __ActiveBuffer_vertex[i * __VertexSize + 2];
+				var y2 = __ActiveBuffer_vertex[i * __VertexSize + 3];
+			}else if (flag == 2){
+				var x1 = __ActiveBuffer_vertex[i * __VertexSize + 2];
+				var y1 = __ActiveBuffer_vertex[i * __VertexSize + 3];
+				var x2 = __ActiveBuffer_vertex[i * __VertexSize + 4];
+				var y2 = __ActiveBuffer_vertex[i * __VertexSize + 5];
+			}else{
+				var x1 = __ActiveBuffer_vertex[i * __VertexSize];
+				var y1 = __ActiveBuffer_vertex[i * __VertexSize + 1];
+				var x2 = __ActiveBuffer_vertex[i * __VertexSize + 4];
+				var y2 = __ActiveBuffer_vertex[i * __VertexSize + 5];
+			}
+			
+			var __Tem = [];
+			//console.log("x1", x1, "y1", y1, "x2", x2, "y2", y2);
+			var flag; // 1: 以x为基准， 2： 以y为基准
+			Math.abs(x1 - x2) > Math.abs(y1 - y2) ? flag = 1: flag = 2;
+			//console.log("flag", flag);
+			console.log("begin", __PointBuffer);
+			__PointBuffer = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
+			//__Tem = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
+			//__PointBuffer += __Tem;
+			console.log("back __PointBuffer", __PointBuffer);
+		}
+
+		function line_3(i, flag){
+			if (flag == 1){
+				var x1 = i * __VertexSize;
+				var y1 = i * __VertexSize + 1;
+				var z1 = i * __VertexSize + 2;
+				var x2 = i * __VertexSize + 3;
+				var y2 = i * __VertexSize + 4;
+				var z2 = i * __VertexSize + 5;
+			}else if (flag == 2){
+				var x1 = i * __VertexSize + 3;
+				var y1 = i * __VertexSize + 4;
+				var z1 = i * __VertexSize + 5;
+				var x2 = i * __VertexSize + 6;
+				var y2 = i * __VertexSize + 7;
+				var z2 = i * __VertexSize + 8;
+			}else{
+				var x1 = i * __VertexSize;
+				var y1 = i * __VertexSize + 1;
+				var z1 = i * __VertexSize + 2;
+				var x2 = i * __VertexSize + 6;
+				var y2 = i * __VertexSize + 7;
+				var z2 = i * __VertexSize + 8;
+			}
+			
+			var flag; // 1: 以x为基准， 2： 以y为基准, 3: 以z为基准
+			Math.abs(x1 - x2) > Math.abs(y1 - y2) ? (Math.abs(x1 - x2) > Math.abs(z1 - z2) ?  flag = 1: flag = 3):(Math.abs(y1 - y2) > Math.abs(z1 - z2) ?  flag = 2: flag = 3);
+			__PointBuffer = addPoint_3 (x1, y1, z1, x2, y2, z2, __PointBuffer, flag );
+		}
+
+
+
 		function sort( a,  b){
 			//console.log("a", a, "b",b);
 			return a > b ? [b ,a, 1] : [a ,b, 0];
@@ -423,9 +551,9 @@
 					z2 = returnValue[1];
 				}
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(i);
-					__PointBuffer = __PointBuffer.concat(y1 + (y2 - y1) / (x2 - x1 ) * (i - x1));
-					__PointBuffer = __PointBuffer.concat(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1));
+					__PointBuffer = __PointBuffer.concat(i + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor( y1 + (y2 - y1) / (x2 - x1 ) * (i - x1))+ 0.5 );
+					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (x2 - x1 ) * (i - x1)) + 0.5) ;
 					// 这个公式在之后还要进行变换
 				}	
 			break;
@@ -443,9 +571,9 @@
 					z2 = returnValue[1];
 				}
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(x1 + (x2 - x1)/ (y2 - y1) * (i - x1));
-					__PointBuffer = __PointBuffer.concat(i);
-					__PointBuffer = __PointBuffer.concat(z1 + (z2 - z1) / (y2 - y1) * (i - x1));
+					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1) * (i - x1))+ 0.5);
+					__PointBuffer = __PointBuffer.concat(i + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor(z1 + (z2 - z1) / (y2 - y1) * (i - x1)) + 0.5);
 					// 这个公式在之后还要进行变换
 				}	
 			break;
@@ -463,9 +591,9 @@
 					y2 = returnValue[1];
 				}
 				for (var i = x1; i <= x2; i++){
-					__PointBuffer = __PointBuffer.concat(x1 + (x2 - x1)/ (y2 - y1 ) * (i - x1));
-					__PointBuffer = __PointBuffer.concat(y1 + (y2 - y1) / (x2 - x1 ) * (i - x1));
-					__PointBuffer = __PointBuffer.concat(i);
+					__PointBuffer = __PointBuffer.concat(Math.floor(x1 + (x2 - x1)/ (y2 - y1 ) * (i - x1)) + 0.5);
+					__PointBuffer = __PointBuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i - x1)) + 0.5);
+					__PointBuffer = __PointBuffer.concat(i + 0.5);
 					// 这个公式在之后还要进行变换
 				}	
 			break;
