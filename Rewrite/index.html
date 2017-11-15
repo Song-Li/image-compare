@@ -35,9 +35,27 @@
             10, 110,
             10, 112,
             200, 10,
-            10, 110,
+            10, 114,
+            10, 116,
+			200, 10,
+			10, 118,
+            10, 120,
+			200, 10,
+			10, 122,
+            10, 124,
+			200, 10,
+			10, 126,
+            10, 128,
+			200, 10,
+			10, 130,
+            10, 132,
+			200, 10,
+			10, 134,
+            10, 136,
+			200, 10,
+			10, 138,
+            10, 140,
             200, 10,
-			20, 200,
         ];
          
          
@@ -339,7 +357,7 @@
 				//先把三角形给完整的画出来
 				gl.my_drawArrays(primitiveType, offset, count);
 				//之后再重新添加点
-				
+				/*
 				for (i = 0; i < count; i += 3){   // 3个点
 					console.log("count i", i);
 					// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
@@ -361,6 +379,7 @@
 					break;
 					}
 				}
+				*/
 				
 				console.log("__My_buffer", __My_buffer);
 				console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
@@ -370,7 +389,7 @@
 			break;
 			}			
 		 }
-		 var n = 3;
+		 var n = 3 * 8;
          gl.drawArrays(gl.TRIANGLES, 0, n);	
 
 		 // 数据传递到__PointBuffer, 开始在这里进行画图
