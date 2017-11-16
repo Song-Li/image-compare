@@ -7,77 +7,123 @@
       <canvas width = "223" height = "293" id = "my_Canvas"></canvas>
 	  <script src="app.js"></script>
       <script>
-		
-		 
-         
-		 /*================Creating a canvas=================*/
-		 /*
-         var canvas = document.getElementById('my_Canvas');
-         gl = canvas.getContext('experimental-webgl',{antialias: false}); 
-		*/
-
-      
-         /*==========Defining and storing the geometry=======*/
-        /*
-		 var vertices = [];
-		 for (var i = 128; i <= 128; i += 1)
-			for (var j = 0; j <= 127; j += 1)
-            vertices = vertices.concat([i , j]);*/
-        var vertices = [
-            10, 112, 0,
-            100, 110, 0,
-            200, 10, 0
-        ];
-         
-         
-         // Create an empty buffer object to store the vertex buffer
-         var vertex_buffer = gl.createBuffer();
-
-         //Bind appropriate array buffer to it
-         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-		 
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/		 
-		 // 重新定义bufferData并且用全局变量记录bufferData
-		 // 这块需要确认是否是index
-		 // 如果是index的话还需要重新构造数据
-		 /*
-		 gl.my_glbufferData = gl.bufferData;
-		 gl.bufferData = function (a, b, c){
-			if (a == gl.ELEMENT_ARRAY_BUFFER){
-				__My_index = b;
-				__My_index_flag = 1;
-			}
-			else{
-				__My_buffer = b;
-				gl.my_glbufferData(a, b, c);
-			//console.log(b);
-			//console.log(__My_buffer);
-			}
-		 } 
-		 */
-         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
-	
-         // Unbind the buffer
-         gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
 
-         /*=========================Shaders========================*/
-      
-         // vertex shader source code
-         var vertCode =
-            'attribute vec2 coordinates;' +
-			'uniform vec2 u_resolution;' +
-			'uniform mat3 u_matrix;'+
+		var vertCode =
+			'precision mediump float;'+
+            'attribute vec4 coordinates;' +
+			'uniform mat4 u_matrix;'+
+			'attribute vec3 vertColor;'+
+			'varying vec3 fragColor;'+
 				
             'void main(void) {' +
-		 	   'vec2 position = (u_matrix * vec3(coordinates, 1)).xy;'+
-			   ' vec2 zeroToOne = position / u_resolution;' +
-			   ' vec2 zeroToTwo = zeroToOne * 2.0;' +
-			   ' vec2 clipSpace = zeroToTwo - 1.0;' +
-               ' gl_Position = vec4(clipSpace,0.0 , 1.0);' +
+				'gl_Position = u_matrix * coordinates;'+
+				'fragColor = vertColor;' +
                'gl_PointSize = 1.0;'+
+			'}';
+
+		var fragCode =
+		 	'precision mediump float;' +
+		    'varying vec3 fragColor;' +
+            'void main(void) {' +
+               ' gl_FragColor = vec4(fragColor/255.0, 1.0);' +
             '}';
+			
+
+	
+		
+	gl.clearColor(0.0, 0.0, 0.0, 1.0);	
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.enable(gl.DEPTH_TEST);
+	gl.viewport(0,0,canvas.width,canvas.height);
+
+	var vertShader = gl.createShader(gl.VERTEX_SHADER);
+	var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+	
+	gl.shaderSource(vertShader, vertCode);
+	gl.shaderSource(fragShader, fragCode);
+
+	gl.compileShader(vertShader);
+			if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
+		console.error('ERROR compiling vertex shader!',
+						gl.getShaderInfoLog(vertShader));
+		//return;
+		}
+
+	gl.compileShader(fragShader);
+		 if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
+			console.error('ERROR compiling fragment shader!',
+						  gl.getShaderInfoLog(fragShader));
+			//return;
+	}	
+
+	var shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertShader); 
+    gl.attachShader(shaderProgram, fragShader);
+    gl.linkProgram(shaderProgram);
+	gl.validateProgram(shaderProgram);
+
+    var vertices = [
+    	0, 100, 0, 128, 0, 0,
+    	75, 75, 0, 0, 128, 0,
+        75, 0, 0 , 0, 0, 128
+	];
+		
+	var vertex_buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);    
+	
+	var coord = gl.getAttribLocation(shaderProgram, "coordinates");
+	var colorA = gl.getAttribLocation(shaderProgram, 'vertColor');
+
+	gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
+	gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT,
+	                                                   3 * Float32Array.BYTES_PER_ELEMENT);
+	
+	gl.enableVertexAttribArray(coord);
+	gl.enableVertexAttribArray(colorA);	
+
+	gl.useProgram(shaderProgram);
+
+	var matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
+
+
+	var m4 = {
+
+	projection: function(width, height, depth) {
+		// Note: This matrix flips the Y axis so 0 is at the top.
+		return [
+		2 / width, 0, 0, 0,
+		0, -2 / height, 0, 0,
+		0, 0, 2 / depth, 0,
+		-1, 1, 0, 1,
+		];
+	}
+	};
+		
+	var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+
+    	 // Set the matrix.
+	   gl.uniformMatrix4fv(matrixLocation, false, matrix);
+	   
+	   var n = 3;
+         gl.drawArrays(gl.TRIANGLES, 0, n);	
+
+
+
+
+
+
+
+
+        /*
+
+		 var frag_buffer = gl.createBuffer();
+		 gl.bindBuffer(gl.ARRAY_BUFFER, frag_buffer);
+		 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+         gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+			
          
          // Create a vertex shader object
          var vertShader = gl.createShader(gl.VERTEX_SHADER);
@@ -86,12 +132,19 @@
          gl.shaderSource(vertShader, vertCode);
 
          // Compile the vertex shader
-         gl.compileShader(vertShader);
+		 gl.compileShader(vertShader);
+			if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
+		console.error('ERROR compiling vertex shader!',
+						gl.getShaderInfoLog(vertShader));
+		//return;
+		}
 
          // fragment shader source code
-         var fragCode =
+		 var fragCode =
+		 	'precision mediump float;' +
+		    'varying vec3 fragColor;' +
             'void main(void) {' +
-               ' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);' +
+               ' gl_FragColor = vec4(fragColor, 1.0);' +
             '}';
          
          // Create fragment shader object
@@ -101,7 +154,13 @@
          gl.shaderSource(fragShader, fragCode);
       
          // Compile the fragmentt shader
-         gl.compileShader(fragShader);
+		 gl.compileShader(fragShader);
+		 if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
+			console.error('ERROR compiling fragment shader!',
+						  gl.getShaderInfoLog(fragShader));
+			//return;
+		  }
+	  
 
          // Create a shader program object to store
          // the combined shader program
@@ -119,166 +178,61 @@
          // Use the combined shader program object
          gl.useProgram(shaderProgram);
 
-         /*======== Associating shaders to buffer objects ========*/
+         /*======== Associating shaders to buffer objects ========
 
          // Bind vertex buffer object
-         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+		 gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+		 gl.bindBuffer(gl.ARRAY_BUFFER, frag_buffer);
 
          // Get the attribute location
-         var coord = gl.getAttribLocation(shaderProgram, "coordinates");
-		 var resolutionUniformLocation = gl.getUniformLocation(shaderProgram, "u_resolution");
+		 var coord = gl.getAttribLocation(shaderProgram, "coordinates");
+		 var colorA = gl.getAttribLocation(shaderProgram, 'vertColor');
+		 
+		 //var resolutionUniformLocation = gl.getUniformLocation(shaderProgram, "u_resolution");
 
 		 
-		 /*==================定义矩阵数据=====================*/
+		 /*==================定义矩阵数据=====================
 		var translation = [10, 100];
   		var angleInRadians = 0.0;
   		var scale = [1, 1];
 
-		 /*==================锁定矩阵传入位置=====================*/
+		 /*==================锁定矩阵传入位置=====================
 
 		 var matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
 
 
-		 var m3 = {
-			translation: function(tx, ty) {
-			return [
-				1, 0, 0,
-				0, 1, 0,
-				tx, ty, 1,
-				];
-			},
+var m4 = {
 
-			rotation: function(angleInRadians) {
-				var c = Math.cos(angleInRadians);
-				var s = Math.sin(angleInRadians);
-				return [
-				c,-s, 0,
-				s, c, 0,
-				0, 0, 1,
-				];
-			},
-
-			scaling: function(sx, sy) {
-				return [
-				sx, 0, 0,
-				0, sy, 0,
-				0, 0, 1,
-				];
-			},
-
-			multiply: function(a, b) {
-				var a00 = a[0 * 3 + 0];
-				var a01 = a[0 * 3 + 1];
-				var a02 = a[0 * 3 + 2];
-				var a10 = a[1 * 3 + 0];
-				var a11 = a[1 * 3 + 1];
-				var a12 = a[1 * 3 + 2];
-				var a20 = a[2 * 3 + 0];
-				var a21 = a[2 * 3 + 1];
-				var a22 = a[2 * 3 + 2];
-				var b00 = b[0 * 3 + 0];
-				var b01 = b[0 * 3 + 1];
-				var b02 = b[0 * 3 + 2];
-				var b10 = b[1 * 3 + 0];
-				var b11 = b[1 * 3 + 1];
-				var b12 = b[1 * 3 + 2];
-				var b20 = b[2 * 3 + 0];
-				var b21 = b[2 * 3 + 1];
-				var b22 = b[2 * 3 + 2];
-				return [
-				b00 * a00 + b01 * a10 + b02 * a20,
-				b00 * a01 + b01 * a11 + b02 * a21,
-				b00 * a02 + b01 * a12 + b02 * a22,
-				b10 * a00 + b11 * a10 + b12 * a20,
-				b10 * a01 + b11 * a11 + b12 * a21,
-				b10 * a02 + b11 * a12 + b12 * a22,
-				b20 * a00 + b21 * a10 + b22 * a20,
-				b20 * a01 + b21 * a11 + b22 * a21,
-				b20 * a02 + b21 * a12 + b22 * a22,
-				];
-			},
-		};
-
-		 /*===================计算矩阵数据===================*/
-		 // Compute the matrices
-		 var translationMatrix = m3.translation(translation[0], translation[1]);
-    	 var rotationMatrix = m3.rotation(angleInRadians);
-    	 var scaleMatrix = m3.scaling(scale[0], scale[1]);
-
-    	 // Multiply the matrices.
-    	 var matrix = m3.multiply(scaleMatrix, rotationMatrix);
-    	 matrix = m3.multiply(matrix, translationMatrix);
+  projection: function(width, height, depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return [
+       2 / width, 0, 0, 0,
+       0, -2 / height, 0, 0,
+       0, 0, 2 / depth, 0,
+      -1, 1, 0, 1,
+    ];
+  }
+};
+		
+		 var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
 
     	 // Set the matrix.
-   		 gl.uniformMatrix3fv(matrixLocation, false, matrix);
+   		 gl.uniformMatrix4fv(matrixLocation, false, matrix);
 
-		
-		 
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/	
-		//在这里判断是否有index，如果有的话，需要从新构造数据		 
-/*		gl.my_vertexAttribPointer = gl.vertexAttribPointer;
-		gl.vertexAttribPointer = function (positionAttributeLocation, size, type, normalize, stride, offset){
-			__VertexPositionAttributeLocation = positionAttributeLocation;
-			__VertexSize = size;
-			__VertexType = type;
-			__VertexNomalize = normalize;
-			__VertexStride = stride;
-			__VertexOffset = offset;
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);	
 
-			//这块进行构造数据
-			//未经过测试                 用松神的算法进行测试！！！！！！！正方体的那个进行测试
-			if (__My_index_flag == 1){
-				var __Tem_my_buffer = [];
-				for (var i = 0; i < __My_index.length; i++){
-					for (var j = __My_index[i] * stride; j < (__My_index[i] + 1) * stride; j++)
-						__Tem_my_buffer = __Tem_my_buffer.concat(__My_buffer);
-				}
-				__My_buffer = __Tem_my_buffer;
-			}
-
-			else {
-					if (__VertexOffset == 0)
-				{
-					// __ActiveBuffer_vertex最后存储所有有效的数据。stride参数还没有加入，之后加。
-					//console.log("__My_buffer", __My_buffer);
-					stride = stride / 4;  // 这个是因为传入的数据内容大小，转换成数据个数
-					for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-						for (var j = i * stride + offset; j <  i * stride + offset + size ; j++)
-							__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[j]);
-					//console.log("__ActiveBuffer_vertex",__ActiveBuffer_vertex);
-					
-					//console.log("stride", stride);
-					for (var i = __VertexOffset ; i < __My_buffer.length ; i++)
-							__ActiveBuffer_vertex = __ActiveBuffer_vertex.concat(__My_buffer[i]);
-						for (i = offset * __VertexSize; i < __ActiveBuffer_vertex.length; i++)
-							__PointBuffer = __PointBuffer.concat(__ActiveBuffer_vertex[i]);
-						__ActiveBuffer_vertex = __PointBuffer;
-						__PointBuffer = [];
-					
-				}
-				else{
-					stride = stride / 4;
-					for (var i = 0; (i + 1) * stride <= __My_buffer.length; i++)
-						for (var j = i * stride + offset; j <  i * stride + offset + size; j++)
-							__ActiveBuffer_frag = __ActiveBuffer_frag.concat(__My_buffer[j]);
-				}
-			}
-
-		}
-
-*/
          // Point an attribute to the currently bound VBO
-         gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		 gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
+		 gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
 		 
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/	
+/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$	
 		 
-		 gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+		 //gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
 
          // Enable the attribute
-         gl.enableVertexAttribArray(coord);
+		 gl.enableVertexAttribArray(coord);
+		 gl.enableVertexAttribArray(colorA);
 
-         /*============= Drawing the primitive ===============*/
+         /*============= Drawing the primitive ===============
 
          // Clear the canvas
          gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -287,102 +241,16 @@
          gl.enable(gl.DEPTH_TEST);
  
          // Clear the color buffer bit
-         gl.clear(gl.COLOR_BUFFER_BIT);
+		 //gl.clear(gl.COLOR_BUFFER_BIT);
+		 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-         // Set the view port
-         gl.viewport(0,0,canvas.width,canvas.height);
+*/         // Set the view port
+         
 			
          // Draw the triangle
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
-/*
-		 gl.my_drawArrays = gl.drawArrays;
-		 gl.drawArrays = function(primitiveType, offset, count){
-			switch (primitiveType){
-			case gl.POINTS:
-				gl.my_drawArrays(primitiveType,  offset, count);
-			break;
-			case gl.LINES:
-				//gl.my_drawArrays(primitiveType,  offset, count);				
-				// 在这块可以加入一个是应该画出来的判断条件,之后加。
-				//console.log("count", count);
-				//console.log("__VertexSize", __VertexSize);
-				// 我在这块没有考虑这里的offset
-				for (i = 0; i < count; i += 2){   // 因为是每次取2个点，所以是2，在三角形的时候要变换
-					console.log("count i", i);
-					// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
-					switch (__VertexSize){
-					case 1:
-						line_1(i,1);
-					break;
-					case 2:
-						line_2(i,1);
-					break;
-					case 3:
-						line_3(i,1);
-					break;
-					}
-				}
-				console.log("__My_buffer", __My_buffer);
-				console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
-				console.log("__PointBuffer", __PointBuffer);
-			break;
-			case gl.TRIANGLES:
-				//console.log("TRIANGLES");
-				//先把三角形给完整的画出来
-				gl.my_drawArrays(primitiveType, offset, count);
-				//之后再重新添加点
-				
-				for (i = 0; i < count; i += 3){   // 3个点
-					console.log("count i", i);
-					// 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
-					switch (__VertexSize){
-					case 1:
-						line_1(i,1);
-						line_1(i,2);
-						line_1(i,3);
-					break;
-					case 2:
-						line_2(i,1);
-						line_2(i,2);
-						line_2(i,3);
-					break;
-					case 3:
-						line_3(i,1);
-						line_3(i,2);
-						line_3(i,3);
-					break;
-					}
-				}
-				
-				
-				console.log("__My_buffer", __My_buffer);
-				console.log("__ActiveBuffer_vertex", __ActiveBuffer_vertex);
-				console.log("__PointBuffer", __PointBuffer);
 
 
-			break;
-			}	
-			
-			// 数据传递到__PointBuffer, 开始在这里进行画图
-			var Point_Number = __PointBuffer.length;
-			console.log("Point_Number", Point_Number);
-
-			// 重新开始传入buffer
-			
-			var new_vertex_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__PointBuffer), gl.STATIC_DRAW);
-			//gl.bindBuffer(gl.ARRAY_BUFFER, null);
-			gl.my_vertexAttribPointer(__VertexPositionAttributeLocation, __VertexSize,__VertexType, __VertexNomalize, __VertexStride, __VertexOffset);
-					
-			gl.useProgram(shaderProgram);
-			gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
-			gl.my_drawArrays(gl.POINTS, 0, Point_Number/2);		 
-		}
-*/
-
-		 var n = 3;
-         gl.drawArrays(gl.TRIANGLES, 0, n);	
+		
 	
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 		
