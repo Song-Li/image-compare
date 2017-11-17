@@ -8,7 +8,7 @@
 	  <script src="app.js"></script>
       <script>
 
-
+/*
 		var vertCode =
 			'precision mediump float;'+
             'attribute vec4 coordinates;' +
@@ -18,6 +18,32 @@
 				
             'void main(void) {' +
 				'gl_Position = u_matrix * coordinates;'+
+				'fragColor = vertColor;' +
+               'gl_PointSize = 1.0;'+
+			'}';
+*/
+/*
+		var vertCode =
+			'precision mediump float;'+
+            'attribute vec2 coordinates;' +
+			'uniform mat3 u_matrix;'+
+			'attribute vec3 vertColor;'+
+			'varying vec3 fragColor;'+
+				
+            'void main(void) {' +
+				'gl_Position =  vec4((u_matrix * vec3(coordinates, 1)).xy, 0, 1);'+
+				'fragColor = vertColor;' +
+               'gl_PointSize = 1.0;'+
+			'}';
+*/
+
+var vertCode =
+            'attribute vec2 coordinates;' +
+			'attribute vec3 vertColor;'+
+			'varying vec3 fragColor;'+
+				
+            'void main(void) {' +
+				'gl_Position =  vec4(coordinates, 0.0, 1.0);'+
 				'fragColor = vertColor;' +
                'gl_PointSize = 1.0;'+
 			'}';
@@ -64,9 +90,9 @@
 	gl.validateProgram(shaderProgram);
 
     var vertices = [
-    	0, 100, 0, 128, 0, 0,
-    	75, 75, 0, 0, 128, 0,
-        75, 0, 0 , 0, 0, 128
+    	0, 100, 128, 0, 0,
+    	75, 75,  0, 128, 0,
+        75, 70,  0, 0, 128
 	];
 		
 	var vertex_buffer = gl.createBuffer();
@@ -76,16 +102,16 @@
 	var coord = gl.getAttribLocation(shaderProgram, "coordinates");
 	var colorA = gl.getAttribLocation(shaderProgram, 'vertColor');
 
-	gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
-	gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT,
-	                                                   3 * Float32Array.BYTES_PER_ELEMENT);
+	gl.vertexAttribPointer(coord, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
+	gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT,
+	                                                   2 * Float32Array.BYTES_PER_ELEMENT);
 	
 	gl.enableVertexAttribArray(coord);
 	gl.enableVertexAttribArray(colorA);	
 
 	gl.useProgram(shaderProgram);
 
-	var matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
+	//var matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
 
 
 	var m4 = {
@@ -100,11 +126,25 @@
 		];
 	}
 	};
+
+
+		var m3 = {
+	projection: function(width, height) {
+		// 注意：这个矩阵翻转了 Y 轴，所以 0 在上方
+		return [
+		2 / width, 0, 0,
+		0, -2 / height, 0,
+		-1, 1, 1
+		];
+	}
+};
 		
-	var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+	//var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+
+	var matrix = m3.projection(gl.canvas.clientWidth, gl.canvas.clientHeight);
 
     	 // Set the matrix.
-	   gl.uniformMatrix4fv(matrixLocation, false, matrix);
+	   //gl.uniformMatrix3fv(matrixLocation, false, matrix);
 	   
 	   var n = 3;
          gl.drawArrays(gl.TRIANGLES, 0, n);	

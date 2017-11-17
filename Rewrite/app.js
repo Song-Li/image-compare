@@ -51,12 +51,13 @@ gl = canvas.getContext('experimental-webgl',{antialias: false});
 				__VertexPositionAttributeLocation1 = positionAttributeLocation;
 				//console.log("positionAttributeLocation",positionAttributeLocation);
 				//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
+				__VertexSize = size;
 			}
 			else{
 				__VertexPositionAttributeLocation2 = positionAttributeLocation;
 				//console.log("color ---> now");
 			}
-			__VertexSize = size;
+			//__VertexSize = size;
 			__VertexType = type;
 			__VertexNomalize = normalize;
 			__VertexStride = stride;
@@ -187,6 +188,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 		   // 后面跟着flag参数，1代表第一个和第二个点，2代表第二个和第三个点，3代表第一个和第三个点
 		   __Tem_pointbuffer = [];
 		   __Tem_colorbuffer = [];
+		   console.log("__VertexSize", __VertexSize);
            switch (__VertexSize){
 		   case 1:
 				//这个是废状态，暂时不用管
@@ -194,6 +196,8 @@ gl.drawArrays = function(primitiveType, offset, count){
            break;
            case 2:
 			   tem_line_2(i,2);
+			   console.log("__Tem_pointbuffer",__Tem_pointbuffer);
+			   console.log("__Tem_colorbuffer",__Tem_colorbuffer);
 			   for (j = 0; j < __Tem_pointbuffer.length/2; j ++)
 			   		if (__ColorFlag == 0)
 						tri_line_2(__ActiveBuffer_vertex[i * __VertexSize] , 
@@ -258,6 +262,17 @@ gl.drawArrays = function(primitiveType, offset, count){
    var Point_Number = __PointBuffer.length;
    console.log("Point_Number", Point_Number);
 
+   // 在这里进行人工projection
+   //console.log("matrix",matrix)
+   
+   if (__VertexSize == 2){
+	   for (var i = 0; i < Point_Number; i+=2){
+		   __PointBuffer[i] = Math.floor((__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) * 1000) / 1000 ;
+		   __PointBuffer[i + 1] = Math.floor((__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) * 1000) / 1000 ;
+	   }
+   }
+   
+
    // 重新开始传入buffer
    if (__ColorFlag == 0){
 		var new_vertex_buffer = gl.createBuffer();
@@ -287,10 +302,11 @@ gl.drawArrays = function(primitiveType, offset, count){
 			}
 				
 		}
+		console.log("result_buffer",result_buffer);
 		var new_vertex_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(result_buffer), gl.STATIC_DRAW);
-
+		console.log("__VertexSize",__VertexSize);
 		//var new_frag_buffer = gl.createBuffer();
 		//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
 		//gl.my_glbufferData(gl.ARRAY_BUFFER, new Float32Array(__ColorBuffer), gl.STATIC_DRAW);
@@ -298,7 +314,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 		//console.log("__VertexPositionAttributeLocation1",__VertexPositionAttributeLocation1);
 		//console.log("__VertexPositionAttributeLocation2",__VertexPositionAttributeLocation2);
 		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation1, __VertexSize,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 0);	
-		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , 3 * Float32Array.BYTES_PER_ELEMENT);		
+		gl.my_vertexAttribPointer(__VertexPositionAttributeLocation2, 3 ,__VertexType, __VertexNomalize, (__VertexSize + 3) * Float32Array.BYTES_PER_ELEMENT , __VertexSize * Float32Array.BYTES_PER_ELEMENT);		
 		gl.useProgram(shaderProgram);
 		//gl.bindBuffer(gl.ARRAY_BUFFER, new_vertex_buffer);
 		//gl.bindBuffer(gl.ARRAY_BUFFER, new_frag_buffer);
@@ -421,6 +437,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 		}
 
 		function tem_line_2 (i, flag){
+			
 			if (flag == 1){
 				var x1 = __ActiveBuffer_vertex[i * __VertexSize];
 				var y1 = __ActiveBuffer_vertex[i * __VertexSize + 1];
@@ -467,7 +484,9 @@ gl.drawArrays = function(primitiveType, offset, count){
 			var flag; // 1: 以x为基准， 2： 以y为基准
 			Math.abs(x1 - x2) > Math.abs(y1 - y2) ? flag = 1: flag = 2;
 			//console.log("flag", flag);
-			console.log("begin", __Tem_pointbuffer);
+			//console.log("begin", __Tem_pointbuffer);
+			//console.log("x1", x1, "y1", y1, "x2", x2,"y2", y2,
+			//"r1", r1,"g1", g1,"b1", b1,"r2", r2,"g2", g2,"b2", b2,"flag", flag);
 			if (__ColorFlag == 0)
 				__Tem_pointbuffer = tem_addPoint_2 (x1, y1, x2, y2, __Tem_pointbuffer, flag );
 			else
@@ -476,7 +495,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 			
 			//__Tem = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
 			//__PointBuffer += __Tem;
-			console.log("back __PointBuffer", __Tem_pointbuffer);
+			//console.log("back __PointBuffer", __Tem_pointbuffer);
 		}
 
 
@@ -487,7 +506,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 			var flag; // 1: 以x为基准， 2： 以y为基准
 			Math.abs(x1 - x2) > Math.abs(y1 - y2) ? flag = 1: flag = 2;
 			//console.log("flag", flag);
-			console.log("begin", __PointBuffer);
+			//console.log("begin", __PointBuffer);
 			if (__ColorFlag == 0)
 				__PointBuffer = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
 			else
@@ -495,7 +514,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 											r1, g1, b1, r2, g2, b2 );
 			//__Tem = addPoint_2 (x1, y1, x2, y2, __PointBuffer, flag );
 			//__PointBuffer += __Tem;
-			console.log("back __PointBuffer", __PointBuffer);
+			//console.log("back __PointBuffer", __PointBuffer);
 		}
 
 
@@ -727,7 +746,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 				}			
 				//console.log("after", x1, x2);
 				//console.log("after sort  x1",x1, "y1", y1, "x2", x2, "y2", y2, "t", t);
-				console.log("I am here",x1,x2);
+				//console.log("I am here",x1,x2);
 				for (var i = y1; i <= y2; i++){
 					//console.log("x2 - x1", x2 - x1);
 					//console.log("y2 - y1 + 1",y2 - y1 + 1);
@@ -746,7 +765,9 @@ gl.drawArrays = function(primitiveType, offset, count){
 // 在二维数据里面增加二维的数据点
 		// 1: 以x为基准， 2： 以y为基准
 		function tem_addPoint_2 (x1, y1, x2, y2, __Tem_pointbuffer, flag, r1, g1, b1, r2, g2, b2){
-			console.log("x1", x1, "y1", y1, "x2", x2, "y2", y2,"flag", flag);
+			console.log("x1", x1, "y1", y1, "x2", x2,"y2", y2,
+			"r1", r1,"g1", g1,"b1", b1,"r2", r2,"g2", g2,"b2", b2,"flag", flag);
+			//console.log("x1", x1, "y1", y1, "x2", x2, "y2", y2,"flag", flag);
 			if (flag == 1){
 				var t;
 				var returnValue;
@@ -774,6 +795,7 @@ gl.drawArrays = function(primitiveType, offset, count){
 					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
 					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(y1 + (y2 - y1) / (x2 - x1 ) * (i- x1)) + 0.5 );
 					if (__ColorFlag == 1){
+						console.log("in the loop");
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(r1 + (r2 - r1) / (x2 - x1 ) * (i- x1)));
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(g1 + (g2 - g1) / (x2 - x1 ) * (i- x1)));
 						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(b1 + (b2 - b1) / (x2 - x1 ) * (i- x1)));
@@ -810,16 +832,16 @@ gl.drawArrays = function(primitiveType, offset, count){
 				}			
 				//console.log("after", x1, x2);
 				//console.log("after sort  x1",x1, "y1", y1, "x2", x2, "y2", y2, "t", t);
-				console.log("I am here",x1,x2);
+				//console.log("I am here",x1,x2);
 				for (var i = y1; i <= y2; i++){
 					//console.log("x2 - x1", x2 - x1);
 					//console.log("y2 - y1 + 1",y2 - y1 + 1);
 					__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor (x1 + (x2 - x1)/ (y2 - y1 ) * (i - y1))+ 0.5 );
 					__Tem_pointbuffer = __Tem_pointbuffer.concat(i + 0.5);
 					if (__ColorFlag == 1){
-						__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(r1 + (r2 - r1) / (y2 - y1 ) * (i- y1)));
-						__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(g1 + (g2 - g1) / (y2 - y1 ) * (i- y1)));
-						__Tem_pointbuffer = __Tem_pointbuffer.concat(Math.floor(b1 + (b2 - b1) / (y2 - y1 ) * (i- y1)));
+						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(r1 + (r2 - r1) / (y2 - y1 ) * (i- y1)));
+						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(g1 + (g2 - g1) / (y2 - y1 ) * (i- y1)));
+						__Tem_colorbuffer = __Tem_colorbuffer.concat(Math.floor(b1 + (b2 - b1) / (y2 - y1 ) * (i- y1)));
 					}
 				}	
 			}
