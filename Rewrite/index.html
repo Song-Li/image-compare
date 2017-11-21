@@ -43,7 +43,7 @@ var vertCode =
 			'varying vec3 fragColor;'+
 				
             'void main(void) {' +
-				'gl_Position =  vec4(coordinates, 0.0, 1.0);'+
+				'gl_Position =  vec4(coordinates, 1.0);'+
 				'fragColor = vertColor;' +
                'gl_PointSize = 1.0;'+
 			'}';
@@ -90,9 +90,12 @@ var vertCode =
 	gl.validateProgram(shaderProgram);
 
     var vertices = [
-    	0, 100, 128, 0, 0,
-    	75, 75,  0, 128, 0,
-        75, 70,  0, 0, 128
+    	0, 100, 0,128, 0, 0,
+    	75, 75,  0,0, 128, 0,
+		75, 70,  0,0, 0, 128,
+		100, 100, 0,128, 0, 0,
+    	160, 75,  0,128, 0, 0,
+        75, 125,  0,0, 128, 0
 	];
 		
 	var vertex_buffer = gl.createBuffer();
@@ -102,9 +105,9 @@ var vertCode =
 	var coord = gl.getAttribLocation(shaderProgram, "coordinates");
 	var colorA = gl.getAttribLocation(shaderProgram, 'vertColor');
 
-	gl.vertexAttribPointer(coord, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
-	gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT,
-	                                                   2 * Float32Array.BYTES_PER_ELEMENT);
+	gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
+	gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT,
+	                                                   3 * Float32Array.BYTES_PER_ELEMENT);
 	
 	gl.enableVertexAttribArray(coord);
 	gl.enableVertexAttribArray(colorA);	
@@ -139,162 +142,16 @@ var vertCode =
 	}
 };
 		
-	//var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
 
-	var matrix = m3.projection(gl.canvas.clientWidth, gl.canvas.clientHeight);
 
-    	 // Set the matrix.
-	   //gl.uniformMatrix3fv(matrixLocation, false, matrix);
-	   
-	   var n = 3;
+	var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight);
+
+
+	   var n = 6;
          gl.drawArrays(gl.TRIANGLES, 0, n);	
 
 
 
-
-
-
-
-
-        /*
-
-		 var frag_buffer = gl.createBuffer();
-		 gl.bindBuffer(gl.ARRAY_BUFFER, frag_buffer);
-		 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-         gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-			
-         
-         // Create a vertex shader object
-         var vertShader = gl.createShader(gl.VERTEX_SHADER);
-
-         // Attach vertex shader source code
-         gl.shaderSource(vertShader, vertCode);
-
-         // Compile the vertex shader
-		 gl.compileShader(vertShader);
-			if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-		console.error('ERROR compiling vertex shader!',
-						gl.getShaderInfoLog(vertShader));
-		//return;
-		}
-
-         // fragment shader source code
-		 var fragCode =
-		 	'precision mediump float;' +
-		    'varying vec3 fragColor;' +
-            'void main(void) {' +
-               ' gl_FragColor = vec4(fragColor, 1.0);' +
-            '}';
-         
-         // Create fragment shader object
-         var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-
-         // Attach fragment shader source code
-         gl.shaderSource(fragShader, fragCode);
-      
-         // Compile the fragmentt shader
-		 gl.compileShader(fragShader);
-		 if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-			console.error('ERROR compiling fragment shader!',
-						  gl.getShaderInfoLog(fragShader));
-			//return;
-		  }
-	  
-
-         // Create a shader program object to store
-         // the combined shader program
-         var shaderProgram = gl.createProgram();
-
-         // Attach a vertex shader
-         gl.attachShader(shaderProgram, vertShader); 
- 
-         // Attach a fragment shader
-         gl.attachShader(shaderProgram, fragShader);
-
-         // Link both programs
-         gl.linkProgram(shaderProgram);
-
-         // Use the combined shader program object
-         gl.useProgram(shaderProgram);
-
-         /*======== Associating shaders to buffer objects ========
-
-         // Bind vertex buffer object
-		 gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-		 gl.bindBuffer(gl.ARRAY_BUFFER, frag_buffer);
-
-         // Get the attribute location
-		 var coord = gl.getAttribLocation(shaderProgram, "coordinates");
-		 var colorA = gl.getAttribLocation(shaderProgram, 'vertColor');
-		 
-		 //var resolutionUniformLocation = gl.getUniformLocation(shaderProgram, "u_resolution");
-
-		 
-		 /*==================定义矩阵数据=====================
-		var translation = [10, 100];
-  		var angleInRadians = 0.0;
-  		var scale = [1, 1];
-
-		 /*==================锁定矩阵传入位置=====================
-
-		 var matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
-
-
-var m4 = {
-
-  projection: function(width, height, depth) {
-    // Note: This matrix flips the Y axis so 0 is at the top.
-    return [
-       2 / width, 0, 0, 0,
-       0, -2 / height, 0, 0,
-       0, 0, 2 / depth, 0,
-      -1, 1, 0, 1,
-    ];
-  }
-};
-		
-		 var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
-
-    	 // Set the matrix.
-   		 gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-
-         // Point an attribute to the currently bound VBO
-		 gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
-		 gl.vertexAttribPointer(colorA, 3, gl.FLOAT, false, 6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
-		 
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$	
-		 
-		 //gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
-
-         // Enable the attribute
-		 gl.enableVertexAttribArray(coord);
-		 gl.enableVertexAttribArray(colorA);
-
-         /*============= Drawing the primitive ===============
-
-         // Clear the canvas
-         gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-         // Enable the depth test
-         gl.enable(gl.DEPTH_TEST);
- 
-         // Clear the color buffer bit
-		 //gl.clear(gl.COLOR_BUFFER_BIT);
-		 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-*/         // Set the view port
-         
-			
-         // Draw the triangle
-
-
-		
-	
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
-		
-/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
 		  var dataURL = canvas.toDataURL('image/png', 1.0);
 		console.log(dataURL);
