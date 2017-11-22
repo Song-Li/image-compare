@@ -1,22 +1,37 @@
 <!doctype html>
 <html>
    <body>
-      <canvas width = "500" height = "500" id = "my_Canvas"></canvas>
+      <script src="jquery.js"></script>
+	  <script src="collector.js"></script>
+      <canvas width = "5" height = "5" id = "my_Canvas"></canvas>
 
       <script>
 
          /*================Creating a canvas=================*/
          var canvas = document.getElementById('my_Canvas');
-         gl = canvas.getContext('experimental-webgl'); 
-      
+         gl = canvas.getContext('experimental-webgl', {antialias:false}); 
+         //gl = canvas.getContext('experimental-webgl', {antialias:true}); 
          /*==========Defining and storing the geometry=======*/
 
-         var vertices = [
-            -0.5,0.5,0.0,
-            0.0,0.5,0.0,
-            -0.25,0.25,0.0, 
-         ];
-         
+         var vertices = [];
+         var __Map_Matrix = [];
+
+/*
+         for (var i = 0; i < 200; i++){
+             vertices = vertices.concat( -1 + (i + i / 100) / 100);
+             vertices = vertices.concat( -1 + (i + i / 100) / 100);
+             vertices = vertices.concat(0 );
+         }
+*/
+
+/*
+        for (var i = 0; i < 100; i++){
+             vertices = vertices.concat( -1 + (i + 1.0) / 100);
+             vertices = vertices.concat( -1 + (i + 2.0) / 100);
+             vertices = vertices.concat(0 );
+         }
+
+ */        
          // Create an empty buffer object to store the vertex buffer
          var vertex_buffer = gl.createBuffer();
 
@@ -108,9 +123,62 @@
 
          // Set the view port
          gl.viewport(0,0,canvas.width,canvas.height);
+         
+         console.log("canvas.width",canvas.width,"canvas.height",canvas.height);
+
+         var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+
+         for (var i = 0; i < canvas.width; i++)
+            for (var j = 0; j < canvas.height; j++){
+                for (var k = 0; k <= 1.0; k += 0.1){
+                    vertices = [];
+                    vertices = vertices.concat((j * canvas.width + k) / canvas.width );
+                    vertices = vertices.concat((i * canvas.height + k) / canvas.height );
+                    vertices = vertices.concat(0.0 );
+                    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+                    // Pass the vertex data to the buffer
+                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+                    gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+                    gl.useProgram(shaderProgram);
+                    console.log("vertices", vertices);
+                    gl.drawArrays(gl.POINTS, 0, 1);
+                    gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                    console.log("pixels",pixels);
+                    console.log((i * canvas.height + j) * 4 + 1);
+                    if (pixels[(i * canvas.height + j) * 4 + 1] != 0){
+                        __Map_Matrix = __Map_Matrix.concat((j * canvas.width + k) / canvas.width );
+                        __Map_Matrix = __Map_Matrix.concat((i * canvas.height + k) / canvas.height );
+                        __Map_Matrix = __Map_Matrix.concat(0);
+                        break;
+                    }
+                }
+
+
+            }
+/*
+         //var vertices = [0.1, 0.9 , 0.0];
+        //Bind appropriate array buffer to it
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+         // Pass the vertex data to the buffer
+         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+         gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+         gl.useProgram(shaderProgram);
 
          // Draw the triangle
-         gl.drawArrays(gl.POINTS, 0, 3);
+         gl.drawArrays(gl.POINTS, 0,1);
+
+
+*/
+         
+    
+        console.log(__Map_Matrix); // Uint8Array
+        
+
+        /*
+        var dataURL = canvas.toDataURL('image/png', 1.0);
+		console.log(dataURL);
+        tryTest(dataURL);
+        */
 
       </script>
    </body>
