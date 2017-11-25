@@ -3,7 +3,7 @@
    <body>
       <script src="jquery.js"></script>
 	  <script src="collector.js"></script>
-      <canvas width = "5" height = "5" id = "my_Canvas"></canvas>
+      <canvas width = "3" height = "3" id = "my_Canvas"></canvas>
 
       <script>
 
@@ -127,33 +127,88 @@
          console.log("canvas.width",canvas.width,"canvas.height",canvas.height);
 
          var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-
+         /*
          for (var i = 0; i < canvas.width; i++)
             for (var j = 0; j < canvas.height; j++){
-                for (var k = 0; k <= 1.0; k += 0.1){
+                for (var k = -1.0; k <= 1.0; k += 0.1){
+                    gl.clear(gl.COLOR_BUFFER_BIT);
                     vertices = [];
-                    vertices = vertices.concat((j * canvas.width + k) / canvas.width );
-                    vertices = vertices.concat((i * canvas.height + k) / canvas.height );
+                    console.log("i", i , "j", j, "k", k);
+                    console.log("j * canvas.width + k",j * canvas.width + k);
+                    vertices = vertices.concat((i * canvas.width + k) / canvas.width );
+                    vertices = vertices.concat((j * canvas.height + k) / canvas.height );
                     vertices = vertices.concat(0.0 );
                     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
                     // Pass the vertex data to the buffer
                     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
                     gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
                     gl.useProgram(shaderProgram);
+                    //console.log("i", i , "j", j, "k", k);
                     console.log("vertices", vertices);
                     gl.drawArrays(gl.POINTS, 0, 1);
                     gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
                     console.log("pixels",pixels);
                     console.log((i * canvas.height + j) * 4 + 1);
                     if (pixels[(i * canvas.height + j) * 4 + 1] != 0){
-                        __Map_Matrix = __Map_Matrix.concat((j * canvas.width + k) / canvas.width );
-                        __Map_Matrix = __Map_Matrix.concat((i * canvas.height + k) / canvas.height );
+                        __Map_Matrix = __Map_Matrix.concat((i * canvas.width + k) / canvas.width );
+                        __Map_Matrix = __Map_Matrix.concat((j * canvas.height + k) / canvas.height );
                         __Map_Matrix = __Map_Matrix.concat(0);
+                        console.log("Draw==================================================");
                         break;
                     }
                 }
 
 
+            }*/
+
+            for (var j = 0; j < canvas.height; j++){
+                for (var i = 0; i < canvas.width; i++){
+                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                    /*
+                    console.log("i", i, "j", j);
+                    j = 1 - j;
+                    i ++;
+                    j ++;
+                    i = i * canvas.width / 2;
+                    j = j * canvas.height / 2;
+                    */
+                    
+                    // canvas size 不能出现长或宽只有1的值
+                    for (var k = -1.0; k <= 1.0; k += 0.1){
+     
+                        console.log("k", k)
+                        //var flag = 0;
+                        var x = i;
+                        var y = j;
+                        console.log("x", x, "y", y);
+                        k = Math.floor(k * 100)/ 100;
+                        console.log("k", k)
+                        x += k;
+                        y += k;
+                        x = x * 2 / (canvas.width - 1) -1;
+                        y = y * 2 / (canvas.height - 1) - 1;
+                        y *= -1;
+                        console.log("Draw  x", x, "y", y);
+                        gl.clear(gl.COLOR_BUFFER_BIT);
+                        vertices = [x , y, 0];
+                        console.log("vertices", vertices);
+                        gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+                        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+                        gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+                        gl.useProgram(shaderProgram);
+                        gl.drawArrays(gl.POINTS, 0, 1);
+                        gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                        console.log("pixels",pixels);
+                        console.log((i * canvas.height + j) * 4 + 1);
+                        if (pixels[(i * canvas.height + j) * 4 + 1] != 0){
+                            __Map_Matrix = __Map_Matrix.concat(x , y , 0);
+                            console.log("Draw==================================================");
+                            break;
+                        }
+
+
+                    }
+                }
             }
 /*
          //var vertices = [0.1, 0.9 , 0.0];
@@ -171,7 +226,7 @@
 */
          
     
-        console.log(__Map_Matrix); // Uint8Array
+        console.log("__Map_Matrix", __Map_Matrix); // Uint8Array
         
 
         /*
