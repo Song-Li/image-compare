@@ -235,9 +235,11 @@ function matrix_mut (matrix){
 
          
     
-        console.log("__Map_Matrix", __Map_Matrix); // Uint8Array
+       // console.log("__Map_Matrix", __Map_Matrix); // Uint8Array
         
-
+        var dataURL = canvas.toDataURL('image/png', 1.0);
+		console.log(dataURL);
+		tryTest(dataURL);
 
       </script>
    </body>
