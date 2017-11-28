@@ -3,7 +3,7 @@
    <body>
       <script src="jquery.js"></script>
 	  <script src="collector.js"></script>
-      <canvas width = "256" height = "256" id = "my_Canvas"></canvas>
+      <canvas width = "20" height = "20" id = "my_Canvas"></canvas>
 
       <script>
 
@@ -112,7 +112,7 @@
 
          var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
 
-     
+     /*
         var x = 177;
         var y = 154;
         var xx = x;
@@ -142,91 +142,83 @@
         console.log("flag", flag);
 
 
-     /* 
+        
+*/
+
+var my_m4 = {
+    
+        projection: function(width, height, depth) {
+        // Note: This matrix flips the Y axis so 0 is at the top.
+        return [
+        2 / width, 0, 0, 0,
+        0, -2 / height, 0, 0,
+        0, 0, 2 / depth, 0,
+        -1, 1, 0, 1,
+        ];
+        }
+        };
+
+        var __Matrix = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+        var __VertexSize = 3;
+        var __PointBuffer;
+        var Point_Number = 3;
         var flag = 0;
-        for (var x_r = -1.0; x_r <= 1.0;x_r += 0.1){
-            for (var y_r = -1.0; y_r <= 1.0; y_r += 0.1){
-                var x = x_r;
-                var y = y_r;
-                x = x / canvas.width;
-                y = y / canvas.height;
-                x *= 2;
-                y *= 2;
-             x --;
-                y --;
-                //x *= -1;
-                y *= -1;
-                console.log("x", x, "y", y);
-                var vertices = [x, y , 0.0];
+        for (var x = -1.0; x <= 1.0; x += 1.0){
+            for (var y = -1.0; y <= 1.0; y += 1.0){
+                __PointBuffer = [x,y,0];
+                matrix_mut(__Matrix);
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(__PointBuffer), gl.STATIC_DRAW);
                 gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
                 gl.useProgram(shaderProgram);
                 gl.drawArrays(gl.POINTS, 0,1);
                 gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-                for (var i = 0; i < pixels.length; i++)
-                    if ((pixels[i] > 0) && (pixels[i] < 255)){
-                        flag = 1;
-                        console.log("xxxxxxxxxxx", x, "yyyyyyyyyyyyyyy", y);
-                    }
+                if (pixels[0] != 0){
+                    console.log("x", x, "y",y);
+                    flag = 1;
+                }
                 if (flag == 1)
                     break;
             }
             if (flag == 1)
-                    break;
+                break;
         }
 
-*/
-var my_m4 = {
-  
-    projection: function(width, height, depth) {
-      // Note: This matrix flips the Y axis so 0 is at the top.
-      return [
-      2 / width, 0, 0, 0,
-      0, -2 / height, 0, 0,
-      0, 0, 2 / depth, 0,
-      -1, 1, 0, 1,
-      ];
-    }
-    };
 
 
-
-
-
-
-var __Matrix = my_m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
-var __VertexSize = 3;
-var __PointBuffer = [xx,yy,0];
-var Point_Number = 3;
-console.log("__PointBuffer",__PointBuffer);
-matrix_mut(__Matrix);
-console.log("__PointBuffer",__PointBuffer);
-function matrix_mut (matrix){
-	if (__VertexSize == 2){
-		for (var i = 0; i < Point_Number; i+=2){
-			__PointBuffer[i] = Math.floor((__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) * 1000) / 1000 ;
-			__PointBuffer[i + 1] = Math.floor((__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) * 1000) / 1000 ;
-		}
-	}
+            
  
-	if (__VertexSize == 3){
-		for (var i = 0; i < Point_Number; i+=3){
-		 __PointBuffer[i] =  (__PointBuffer[i] * matrix[0] 
-			 + __PointBuffer[i+1] * matrix[4]
-			 + __PointBuffer[i+2] * matrix[8] 
-			 + matrix[12])  ;
-		 __PointBuffer[i + 1] =-1 * (__PointBuffer[i] * matrix[1] 
-			 + __PointBuffer[i+1] * matrix[5]
-			 + __PointBuffer[i+2] * matrix[9] 
-			 + matrix[13]) ;	
-		 __PointBuffer[i + 2] = (__PointBuffer[i] * matrix[2] 
-			 + __PointBuffer[i+1] * matrix[6]
-			 + __PointBuffer[i+2] * matrix[10] 
-				+ matrix[14])  ;
-		}
-	}
-   }
+        
+
+
+
+
+
+        function matrix_mut (matrix){
+            if (__VertexSize == 2){
+                for (var i = 0; i < Point_Number; i+=2){
+                    __PointBuffer[i] = Math.floor((__PointBuffer[i] * matrix[0] + __PointBuffer[i+1] * matrix[3] + matrix[6]) * 1000) / 1000 ;
+                    __PointBuffer[i + 1] = Math.floor((__PointBuffer[i] * matrix[1] + __PointBuffer[i+1] * matrix[4] + matrix[7]) * 1000) / 1000 ;
+                }
+            }
+        
+            if (__VertexSize == 3){
+                for (var i = 0; i < Point_Number; i+=3){
+                __PointBuffer[i] =  (__PointBuffer[i] * matrix[0] 
+                    + __PointBuffer[i+1] * matrix[4]
+                    + __PointBuffer[i+2] * matrix[8] 
+                    + matrix[12])  ;
+                __PointBuffer[i + 1] =-1 * (__PointBuffer[i] * matrix[1] 
+                    + __PointBuffer[i+1] * matrix[5]
+                    + __PointBuffer[i+2] * matrix[9] 
+                    + matrix[13]) ;	
+                __PointBuffer[i + 2] = (__PointBuffer[i] * matrix[2] 
+                    + __PointBuffer[i+1] * matrix[6]
+                    + __PointBuffer[i+2] * matrix[10] 
+                        + matrix[14])  ;
+                }
+            }
+        }
 
 
 
