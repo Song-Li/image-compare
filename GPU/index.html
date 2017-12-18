@@ -10,26 +10,27 @@
   
   <script id="shader-fs" type="x-shader/x-fragment">
       precision mediump float;
-  
+      uniform vec3 u_someVec[2];
       void main(void) {
-          if (gl_FragCoord.x >= 0.6){
-                if (gl_FragCoord.x <= 110.6){
-                    if (gl_FragCoord.x <= 1.5 * gl_FragCoord.y + 10.0){
-                        gl_FragColor = vec4(gl_FragCoord.x / 128.0, gl_FragCoord.y / 128.0, 0.0, 1.0);
-                    }
-                    else{
-                        gl_FragColor = vec4(0.0,0.0, 1.0, 1.0);
-                    }
-
-                    
-                }
-                else {
-                    gl_FragColor = vec4(0.0,0.0, 1.0, 1.0);
-                } 
-          }
-          else {
+        int flag;
+        flag = 0;
+        if ((gl_FragCoord.x == 50.5) && (gl_FragCoord.y == 0.5)){
+            gl_FragColor = vec4(u_someVec[1], 1.0);
+            flag = 1;
+        }
+        if ((gl_FragCoord.x == 40.5) && (gl_FragCoord.y == 42.5)){
+            gl_FragColor = vec4(u_someVec[1], 1.0);
+            flag = 1;
+        }
+        if ((gl_FragCoord.x == 24.5) && (gl_FragCoord.y == 0.5)){
+            gl_FragColor = vec4(u_someVec[1], 1.0);
+            flag = 1;
+        }
+        if (flag == 0){
             gl_FragColor = vec4(0.0,0.0, 1.0, 1.0);
-        } 
+        }
+            
+        
           
       }
   </script>
@@ -96,6 +97,7 @@
   
   
       var shaderProgram;
+      var someVec2Loc;
   
       function initShaders() {
           var fragmentShader = getShader(gl, "shader-fs");
@@ -112,8 +114,13 @@
   
           gl.useProgram(shaderProgram);
   
-          shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-          gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+          shaderProgram.a = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+          gl.enableVertexAttribArray(shaderProgram.a);
+
+          someVec2Loc = gl.getUniformLocation(shaderProgram, "u_someVec"); 
+          
+
+
   
           
       }
@@ -149,7 +156,9 @@
           gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
           gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
           gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-          gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+          gl.vertexAttribPointer(shaderProgram.a, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+          gl.uniform3fv(someVec2Loc, [0.5, 0.5, 0.0, 0.5, 0.5, 1.0]);
           gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
   
   
