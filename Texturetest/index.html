@@ -33,7 +33,10 @@ var vertexBuffer = null;
 var vertexIndiceBuffer = null;
 var samplerUniform = null;
 var texture = null;
-
+// var t = 0;
+// ***************************
+var pixels = new Uint8Array(canvas.width * canvas.height * 4);
+// ***************************
 function setupContext(){
     try {
        gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
@@ -134,12 +137,24 @@ function draw () {
     gl.uniform1i(samplerUniform, 0);
     
     gl.clearColor(174 / 255, 115 / 255, 194 / 255, 1.0);
+
     gl.clear(gl.COLOR_BUFFER_BIT);
+            // ***************************
+        // ***************************
     
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-	var dataURL = canvas.toDataURL('image/png', 1.0);
-	console.log(dataURL);
-	tryTest(dataURL);
+    gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    console.log(pixels);
+
+ //    for (var i = 1; i < 20000; i++){
+	// 	for (var j = 1; j < 20000;j++){
+	// 		var k;
+	// 		k = 0;
+	// 	}
+	// }
+	// var dataURL = canvas.toDataURL('image/png', 1.0);
+	// // console.log(dataURL);
+	// tryTest(dataURL);
 }
 
 function createTexture (source) {
@@ -147,27 +162,110 @@ function createTexture (source) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    // console.log(source);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.bindTexture(gl.TEXTURE_2D, null);
     return texture;
 }
+// ***************************
+function textureFromPixelArray(gl, dataArray, type, width, height) {
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataArray);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    return texture;
+}
+// ***************************
 
 function loadTextureImage () {
     var img = new Image();
     img.onload = function onImgLoad() {
         texture = createTexture(this);
+
+        // console.log(11111);
         draw();
+
+        // var pixel = new Uint8Array(256 * 256 * 4);
+        // pixel = pixels;
+        pixelprocessing();
+        pixelcolor();
+        // draw();
+        // console.log(pixel);
+        // t = 1;
+        // pixels = pixel;
+// ***************************
+        test();
+// ***************************
     };
     img.src = 'images/12.png';
+
+    // console.log(this);
 }
+// console.log(texture);
+
+
 
 window.onload = function () {
     setupContext();
     initShaders();
     getUniforms();
+
+    // console.log(1111);
     loadTextureImage();
 }
+// ***************************
+// test();
+function test(){
+
+        // if (t == 1){
+    console.log(1111);
+    texture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
+    draw();
+    // t = 0;
+        // }
+
+}
+
+function pixelprocessing(){
+    var i = 0;
+    var tmp = 0;
+    var j = canvas.width * canvas.height * 4 - canvas.width * 4;
+    var count = 0;
+    var ori_j = 0;
+    while(j >= i){
+        if (count == 0){
+            ori_j = j;
+        }
+        for (var k = 0; k < 4; k++){
+            tmp = pixels[i+k];
+            pixels[i+k] = pixels[j+k];
+            pixels[j+k] = tmp;
+        }
+        i = i + 4;
+        if (count < 255){
+            count = count + 1
+            j = j + 4;
+        }
+        else{
+            count = 0;
+            j = ori_j - canvas.width * 4;
+        }
+
+    }
+    // return pixel;
+
+}
+
+function pixelcolor(pixel){
+    for (var i = 0; i <  canvas.width * canvas.height * 4; i = i + 4){
+        for (var k = 0; k < 3; k++){
+            pixels[i+k] = 255 - pixels[i+k];
+        }
+    }
+}
+// ***********************
 </script>
 </body>
 <html>
