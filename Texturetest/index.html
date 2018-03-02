@@ -21,11 +21,7 @@ void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
     //gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0) / 255.0;
     //gl_FragColor = vec4(gl_FragCoord.x/255.0, gl_FragCoord.y/255.0, 0.0, 1.0);
-    if (gl_FragCoord.x >( (2.0 * gl_FragCoord.y))){
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
-    else{
-        gl_FragColor = texture2D(uSampler, vec2( (gl_FragCoord.x - 1.0) / 255.0 , (gl_FragCoord.y - 1.0)/ 255.0));}
+    gl_FragColor = texture2D(uSampler, vec2( (gl_FragCoord.y) / 256.0 , (gl_FragCoord.x)/ 256.0));
 }
 </script>
 </head>
@@ -149,9 +145,9 @@ function draw () {
         // ***************************
     //console.log("画的",pixels);
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-    //gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-    //console.log(pixels);
+    console.log("反转之前的",pixels);
 
  //    for (var i = 1; i < 20000; i++){
 	// 	for (var j = 1; j < 20000;j++){
@@ -190,25 +186,39 @@ function textureFromPixelArray(gl, dataArray, type, width, height) {
 
 function loadTextureImage () {
     var img = new Image();
-    img.onload = function onImgLoad() {
-        texture = createTexture(this);
+    //img.onload = function onImgLoad() {
+        //texture = createTexture(this);
 
         // console.log(11111);
         //draw();
         console.log("转化前的数据",pixels);
         // var pixel = new Uint8Array(256 * 256 * 4);
         // pixel = pixels;
-        pixelprocessing();
+        //pixelprocessing();
         //pixelcolor();
         // draw();
         // console.log(pixel);
         // t = 1;
         // pixels = pixel;
 // ***************************
+for (var i = 0; i < 256; i++){
+        for (var t = 0; t <= 256; t++){
+            pixels[i * 256 * 4 + 4 * t] = i;
+            pixels[i * 256 * 4 + 4 * t + 1] = t;
+            pixels[i * 256 * 4 + 4 * t + 2] = 0;
+            pixels[i * 256 * 4 + 4 * t + 3] = 255;
+        }
+    }
+    
         test();
+        pixelprocessing();
+        console.log("反转之后的",pixels);
+        pixelcolor();
+        test();pixelprocessing();
+        console.log("反转之后的",pixels);
 // ***************************
-    };
-    img.src = 'images/20.png';       
+    //};
+    //img.src = 'images/20.png';       
 
     // console.log(this);
 }
@@ -229,17 +239,9 @@ window.onload = function () {
 function test(){
 
         // if (t == 1){
-    console.log(1111);
-    for (var i = 0; i < 256; i++){
-        for (var t = 0; t <= 256; t++){
-            pixels[i * 256 * 4 + 4 * t] = i;
-            pixels[i * 256 * 4 + 4 * t + 1] = t;
-            pixels[i * 256 * 4 + 4 * t + 2] = t;
-            pixels[i * 256 * 4 + 4 * t + 3] = 255;
-        }
-    }
+    //console.log(1111);
     
-    console.log("画之前的数据",pixels);
+    //console.log("画之前的数据",pixels);
     texture = textureFromPixelArray(gl, pixels, gl.RGBA, canvas.width, canvas.height);
 
     draw();
