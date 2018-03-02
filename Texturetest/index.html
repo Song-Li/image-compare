@@ -20,7 +20,12 @@ uniform sampler2D uSampler;
 void main(void) {
     //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
     //gl_FragColor = floor(texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * 255.0) / 255.0;
-    gl_FragColor = vec4(gl_FragCoord.x/255.0, gl_FragCoord.y/255.0, 0.0, 1.0);
+    //gl_FragColor = vec4(gl_FragCoord.x/255.0, gl_FragCoord.y/255.0, 0.0, 1.0);
+    if (gl_FragCoord.x >( (2.0 * gl_FragCoord.y))){
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    else{
+        gl_FragColor = texture2D(uSampler, vec2( (gl_FragCoord.x - 1.0) / 255.0 , (gl_FragCoord.y - 1.0)/ 255.0));}
 }
 </script>
 </head>
